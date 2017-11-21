@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    @@include('../common/css.html')
+    <link rel="stylesheet" href="./css/page/index.css">
+    <!-- <script src="../../js/page/read/dev/eloam_S620A3DR.js"></script> -->
+</head>
+
+<body class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo">
+    @@include('../common/header_menu.html')
+    <div class="page-container">
+        <!-- @@include('../common/sidebar.html') -->
+        <div class="page-content-wrapper">
+            <div class="page-content padding-top-0">
+                @@include('../content/index.html')
+            </div>
+        </div>
+    </div>
+    @@include('../common/copyright.html') @@include('../common/scripts.html')
+
+    <!-- file export start -->
+    <script src="./js/plugins/export/FileSaver.js"></script>
+    <script src="./js/plugins/export/jszip.js"></script>
+    <script src="./js/plugins/export/pdfmake.js"></script>
+    <script src="./js/plugins/export/vfs_fonts.js"></script>
+    <!-- file export end -->
+
+    <script src="./js/page/index.js"></script>
+    <script>
+        NProgress.done();
+    </script>
+</body>
+
+</html>

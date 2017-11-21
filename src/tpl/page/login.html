@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <!-- common css start -->
+    @@include('../common/css.html')
+    <!-- common css end -->
+
+    <!-- page style -->
+    <link rel="stylesheet" href="./css/page/login.css">
+</head>
+
+<body class=" login">
+    <script src="./js/plugins/nprogress.js">
+    </script>
+    <script>
+        NProgress.start();
+    </script>
+    <!-- BEGIN : LOGIN PAGE 5-1 -->
+    <div class="user-login">
+        <div class="row bs-reset">
+            <div class="col-md-6 bs-reset mt-login-bsfix">
+                <div class="login-bg" style="background-image:url(./img/login/bg1.jpg)">
+                    <!-- <img class="login-logo" src="./img/logo.png" /> -->
+                    <p class="logo-default"></p>
+                </div>
+            </div>
+            <div class="col-md-6 login-container bs-reset mt-login-bsfix">
+                <div class="login-content">
+                    <h1>用户登录</h1>
+                    <p>欢迎进入XX系统</p>
+                    @@include('../content/login/login.html')
+                    <!-- BEGIN FORGOT PASSWORD FORM -->
+                    @@include('../content/login/forget.html')
+                    <!-- END FORGOT PASSWORD FORM -->
+                </div>
+                @@include('../common/copyright.html')
+            </div>
+        </div>
+    </div>
+    <!-- common js start -->
+    @@include('../common/scripts.html')
+    <script src="./js/plugins/jquery.backstretch.js"></script>
+    <script src="./js/plugins/validate/jquery.validate.js"></script>
+    <script src="./js/plugins/validate/additional-methods.js"></script>
+    <!-- common js end -->
+    <!-- page plugins start -->
+    <script src="./js/page/login.js"></script>
+    <!-- page plugins end -->
+    <script>
+        NProgress.done();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,70 @@
+<script src="./js/plugins/nprogress.js">
+</script>
+<script>
+    NProgress.start();
+</script>
+<div class="page-header navbar navbar-fixed-top">
+    <!-- BEGIN HEADER INNER -->
+    <div class="page-header-inner">
+        <!-- BEGIN LOGO -->
+        <div class="page-logo">
+            <a href="reqnote.html">
+                <p class="logo-default"></p>
+                <!-- <img src="./img/logo.png" alt="logo" class="logo-default"> </a> -->
+        </div>
+        <!-- END LOGO -->
+
+        <!-- BEGIN PAGE TOP -->
+        <div class="page-top">
+            <!-- BEGIN TOP NAVIGATION MENU -->
+            <div class="top-menu">
+                <ul class="nav navbar-nav pull-right">
+                    <li class="separator hide"> </li>
+                    <!-- BEGIN USER LOGIN DROPDOWN -->
+                    <!-- DOC: Apply"dropdown-dark" class after below"dropdown-extended" to change the dropdown styte -->
+                    <li class="dropdown dropdown-user dropdown-dark">
+                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            <span class="username username-hide-on-mobile"> </span>
+                            <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
+                            <img alt="" class="img-circle" src="./img/user.png"> </a>
+                        <ul class="dropdown-menu dropdown-menu-default">
+                            <li>
+                                <a href="#usersetting" data-toggle="modal">
+                                    <i class="icon-key"></i> 个人设置 </a>
+                            </li>
+                            <li>
+                                <a href="login.html">
+                                    <i class="icon-key"></i> 退出登录 </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- END USER LOGIN DROPDOWN -->
+                </ul>
+            </div>
+            <!-- END TOP NAVIGATION MENU -->
+        </div>
+        <!-- END PAGE TOP -->
+    </div>
+    <!-- END HEADER INNER -->
+    <div class="page-header-menu">
+        <div class="hor-menu">
+            <ul class="nav navbar-nav">
+                <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">
+                    <a href="reqnote.html">
+                        <i class="icon-home"></i> 申请单
+                        <span class="arrow"></span>
+                    </a>
+                </li>
+                <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">
+                    <a href="index.html">
+                        <i class="icon-magnifier"></i> 信息查询
+                        <span class="arrow"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+@@include('../common/usersetting.html')
+
+<div class="clearfix"></div>

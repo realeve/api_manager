@@ -1,0 +1,28 @@
+<form class="login-form">
+    <div class="alert alert-danger display-hide">
+        <button class="close" data-close="alert"></button>
+        <span>请输入用户名和密码. </span>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">
+            <input class="form-control form-control-solid placeholder-no-fix form-group" type="text" autocomplete="off" placeholder="用户名" name="username" required/> </div>
+        <div class="col-xs-6">
+            <input class="form-control form-control-solid placeholder-no-fix form-group" type="password" autocomplete="off" placeholder="密码" name="password" required/> </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="rem-password">
+                <label class="rememberme mt-checkbox mt-checkbox-outline">
+                    <input type="checkbox" name="remember" checked="true" /> 记住密码
+                    <span></span>
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-8 text-right">
+            <div class="forgot-password">
+                <a href="javascript:;" id="forget-password" class="forget-password">忘记密码?</a>
+            </div>
+            <button class="btn green" type="submit">登录</button>
+        </div>
+    </div>
+</form>

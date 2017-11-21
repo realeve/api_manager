@@ -1,0 +1,44 @@
+.camera-container,
+.task-container {
+    width: 100%;
+    height: 500px;
+    border-radius: 2px;
+}
+
+.task-container {
+    height: 600px;
+}
+
+.step-body {
+    .caption {
+        color: #666;
+        padding: 10px 0;
+        display: inline-block;
+        font-size: 18px;
+        line-height: 18px;
+        padding: 10px 0;
+    }
+    margin: 20px 0;
+}
+
+@score-height: 90px;
+.user-card {
+    position: relative;
+    margin-top: @score-height/1.5;
+    .score {
+        position: absolute;
+        width: @score-height;
+        height: @score-height;
+        left: 50%;
+        top: -@score-height/2;
+        margin-left: -@score-height/2;
+        z-index: 1;
+        background: #26C281;
+        border: 4px solid #fff;
+        border-radius: 50%!important;
+        line-height: @score-height;
+        text-align: center;
+        color: #fff;
+        font-size: 25px;
+    }
+}

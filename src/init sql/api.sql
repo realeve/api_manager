@@ -1,0 +1,96 @@
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : MYSQL
+Source Server Version : 50720
+Source Host           : localhost:3306
+Source Database       : api
+
+Target Server Type    : MYSQL
+Target Server Version : 50720
+File Encoding         : 65001
+
+Date: 2017-11-21 23:01:41
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for sys_api
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_api`;
+CREATE TABLE `sys_api` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `db_id` int(10) unsigned zerofill DEFAULT '0000000001',
+  `api_name` varchar(255) DEFAULT NULL,
+  `nonce` varchar(255) DEFAULT NULL,
+  `sql` text,
+  `param` varchar(255) DEFAULT NULL,
+  `rec_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_api
+-- ----------------------------
+INSERT INTO `sys_api` VALUES ('1', '0000000001', ' 接口列表', 'asd', 'SELECT a.id,a.db_id 数据库id,a.api_name 接口名称,a.nonce,a.sql 查询语句,a.param 查询参数,a.rec_time 建立时间,a.update_time 最近更新 FROM sys_api AS a', '', '2017-07-30 03:07:37', '2017-11-21 22:30:35');
+
+-- ----------------------------
+-- Table structure for sys_database
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_database`;
+CREATE TABLE `sys_database` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `db_name` varchar(255) DEFAULT NULL,
+  `db_key` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_database
+-- ----------------------------
+INSERT INTO `sys_database` VALUES ('1', '接口管理', 'db1');
+INSERT INTO `sys_database` VALUES ('2', '业务数据', 'db2');
+
+-- ----------------------------
+-- Table structure for sys_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user`;
+CREATE TABLE `sys_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `psw` varchar(255) NOT NULL,
+  `rec_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_user
+-- ----------------------------
+DROP TRIGGER IF EXISTS `api_rectime`;
+DELIMITER ;;
+CREATE TRIGGER `api_rectime` BEFORE INSERT ON `sys_api` FOR EACH ROW SET new.rec_time = CURRENT_TIMESTAMP
+;;
+DELIMITER ;
+DROP TRIGGER IF EXISTS `api_update`;
+DELIMITER ;;
+CREATE TRIGGER `api_update` BEFORE UPDATE ON `sys_api` FOR EACH ROW SET new.update_time = CURRENT_TIMESTAMP
+;;
+DELIMITER ;
+DROP TRIGGER IF EXISTS `user_rectime`;
+DELIMITER ;;
+CREATE TRIGGER `user_rectime` BEFORE INSERT ON `sys_user` FOR EACH ROW SET new.rec_time = CURRENT_TIMESTAMP
+;;
+DELIMITER ;
+DROP TRIGGER IF EXISTS `update_psw`;
+DELIMITER ;;
+CREATE TRIGGER `update_psw` BEFORE INSERT ON `sys_user` FOR EACH ROW SET new.psw = MD5(concat('wMqSakbLdy9t8LLD',new.psw))
+;;
+DELIMITER ;
+DROP TRIGGER IF EXISTS `user_updatetime`;
+DELIMITER ;;
+CREATE TRIGGER `user_updatetime` BEFORE UPDATE ON `sys_user` FOR EACH ROW SET new.update_time = CURRENT_TIMESTAMP
+;;
+DELIMITER ;

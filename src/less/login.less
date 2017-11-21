@@ -1,0 +1,221 @@
+body {
+    background: #fff;
+    user-select: none;
+}
+
+
+/* Cubic Bezier Transition */
+
+.user-login {
+    min-height: 100vh;
+    .bs-reset {
+        margin: 0;
+        padding: 0;
+    }
+    .text-right {
+        text-align: right;
+    }
+    .login-bg {
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+    }
+    .login-logo {
+        position: absolute;
+        top: 2.5em;
+        left: 2.5em;
+    }
+    .login-logo.login-6 {
+        top: 80px;
+        left: 80px;
+    }
+    .login-container {
+        position: relative;
+        min-height: 100vh;
+        .login-content,
+        .login-social,
+        .login-copyright {
+            padding: 0 80px;
+        }
+        .login-content {
+            margin-top: 35%;
+            h1 {
+                font-size: 30px;
+                font-weight: 300;
+                color: #4e5a64;
+            }
+            p {
+                color: #a0a9b4;
+                font-size: 15px;
+                line-height: 22px;
+            }
+            .login-form {
+                margin-top: 80px;
+                color: #a4aab2;
+                font-size: 13px;
+                .form-control {
+                    width: 100%;
+                    padding: 10px 0;
+                    border: none;
+                    border-bottom: 1px solid;
+                    border-color: #a0a9b4;
+                    color: #868e97;
+                    font-size: 14px;
+                    margin-bottom: 30px;
+                    border-radius: 0 !important;
+                    &:focus {
+                        outline: 0;
+                    }
+                }
+                .forgot-password,
+                .login-button {
+                    display: inline-block;
+                }
+                .rem-password {
+                    margin-top: 10px;
+                    p {
+                        margin: 0;
+                    }
+                    .rem-checkbox {
+                        border-color: #a4aab2;
+                    }
+                }
+                .forgot-password {
+                    margin-right: 1em;
+                    a {
+                        color: #a4aab2;
+                        &:hover {
+                            color: #337ab7;
+                            text-decoration: none;
+                        }
+                        &:focus {
+                            color: #a4aab2;
+                            text-decoration: none;
+                        }
+                    }
+                }
+            }
+        }
+        .page-footer {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            padding-bottom: 0;
+            padding-left: 80px;
+            .login-social {
+                padding-right: 0;
+                li {
+                    display: inline-block;
+                    list-style: none;
+                    margin-right: 1em;
+                }
+                a {
+                    color: #a9b5be;
+                    font-size: 18px;
+                    &:hover {
+                        color: #337ab7;
+                        text-decoration: none;
+                    }
+                    &:focus {
+                        color: #a9b5be;
+                    }
+                }
+            }
+            .page-footer-inner {
+                padding-left: 0;
+                margin-top: 6px;
+                margin-bottom: 0;
+                p {
+                    margin: 0;
+                    font-size: 13px;
+                    color: #a9b5be;
+                }
+                text-align:left;
+            }
+        }
+    }
+    .alert {
+        margin-top: -60px;
+    }
+    .form-group.has-error {
+        border-bottom: 2px solid #ed6b75 !important;
+    }
+    .form-group.valid {
+        border-bottom: 1px solid #a0a9b4 !important;
+    }
+}
+
+@media (max-width: 1365px) {
+    .user-login {
+        .login-logo.login-6 {
+            top: 40px;
+            left: 40px;
+        }
+        .login-container {
+            .login-content,
+            .login-social,
+            .login-copyright {
+                padding: 0 40px;
+            }
+            .login-social {
+                padding-right: 0;
+            }
+            .login-copyright {
+                padding-left: 0;
+            }
+        }
+    }
+}
+
+@media (max-width: 1023px) {
+    .user-login {
+        min-height: 40vh;
+        .mt-login-bsfix {
+            width: 100%;
+        }
+        .login-bg {
+            min-height: 50vh;
+        }
+        .login-logo.login-6 {
+            position: relative;
+            margin: 0 0 40px 0;
+        }
+        .login-container {
+            min-height: 40vh;
+            .login-content {
+                margin-top: 60px;
+            }
+            .login-form {
+                margin-top: 40px;
+            }
+            .rem-password {
+                margin-bottom: 1em;
+            }
+            .page-footer {
+                position: absolute;
+                bottom: 0px;
+                padding-bottom: 0;
+                padding-left: 40px;
+                .login-social li {
+                    margin-right: 0.5em;
+                }
+            }
+        }
+        .alert {
+            margin-top: -20px;
+        }
+    }
+}
+
+@media (max-width: 640px) {
+    .user-login {
+        .login-container {
+            .login-content {
+                .text-right {
+                    text-align: left;
+                }
+            }
+        }
+    }
+}
