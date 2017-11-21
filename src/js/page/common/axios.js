@@ -39,12 +39,12 @@ export let axios = async option => {
         }
         return res.data;
     }).catch(res => {
-        let errMsg = `数据读取失败<br>错误原因：${res.response.data.errmsg}`
+        let req = res.response.request;
+        let errMsg = `${req.status} ${req.statusText}<br>数据读取失败<br>错误原因：${res.response.data.errmsg}`
         lib.tip(errMsg, 1, 0);
-        return {
-            row: 0,
-            data: [],
-            title: '数据读取失败'
-        };
+        let data = res.response.data;
+        data.status = req.status;
+        data.statusText = req.statusText;
+        return Promise.reject(data);
     })
 };

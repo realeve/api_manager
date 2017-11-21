@@ -44,12 +44,14 @@ const bui = {
     html: projectName + '-html',
     json: projectName + '-json',
     watch: projectName + '-watch',
-    webserver: projectName + '-webserver'
+    webserver: projectName + '-webserver',
+    fonts2: 'fonts2'
 }
 const path = {
     js: './src/js',
     images: './src/img',
     css: './src/css',
+    fonts: './src/fonts',
     less: './src/less',
     html: './src/tpl',
     json: './src/data',
@@ -61,11 +63,12 @@ const watch = {
     css: [path.css + '/*.css', path.css + '/**/*.css'],
     less: [path.less + '/*.less', path.less + '/**/*.less'],
     fonts: [path.css + '/**/fonts/*'],
+    fonts2: path.fonts + '/**/*',
     html: [path.html + '/*.html', path.html + '/**/*'],
     page: path.html + '/page/*.html',
     json: [path.json + '/*.json', path.json + '/**/*.json']
 }
-const watchBuiArr = [bui['images'], bui['js'], bui['babel'], bui['css'], bui['less'], bui['fonts'], bui['html'], bui['json']]
+const watchBuiArr = [bui['images'], bui['js'], bui['babel'], bui['css'], bui['less'], bui['fonts2'], bui['fonts'], bui['html'], bui['json']]
 const deploy = {
     js: path.deploy + '/js',
     images: path.deploy + '/img',
@@ -152,6 +155,16 @@ gulp.task(bui['fonts'], function() {
         .pipe(flatten({ includeParents: [1, 1] }))
         .pipe(gulp.dest(deploy.fonts));
 });
+
+gulp.task(bui['fonts2'], function() {
+    gutil.log(smile + ' -> ' + bui['fonts2']);
+    return gulp.src(watch.fonts2)
+        .pipe(plumber())
+        .pipe(changed(deploy.fonts + '/fonts'))
+        .pipe(flatten({ includeParents: [1, 1] }))
+        .pipe(gulp.dest(deploy.fonts + '/fonts'));
+});
+
 gulp.task(bui['html'], function() {
     gutil.log(smile + ' -> ' + bui['html']);
     return gulp.src(watch.page)

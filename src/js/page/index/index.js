@@ -5,14 +5,41 @@ let exportConfig = {
     title: '',
     header: [],
     body: [],
+    showTitle: true,
     orientation: 'landscape' // 'portrit'
 };
 
-let initEvent = () => {
+let tblData = [];
 
+let initEvent = () => {
     exportConfig.title = 'API列表';
     exportConfig.message = '';
+    initExportBtns();
+    initEditBtn();
+}
 
+let initEditBtn = () => {
+    $('tbody').on('click', 'button[name="edit"]', function() {
+        let id = $(this).data('id');
+        lib.tip('编辑' + id);
+    })
+}
+
+let initDelBtn = () => {
+    $('tbody').on('confirmed.bs.confirmation', 'button[name="del"]', function() {
+        let id = $(this).data('id');
+        deleteDataFromIdx(id);
+        deleteAPI(id,$(this).data('nonce'));
+        $(this).parents('tr').remove();
+    });
+}
+
+let deleteDataFromIdx = idx => {
+    let dataIdx = tblData.findIndex(item => item[0] == idx);
+    tblData.splice(dataIdx, 1);
+}
+
+let initExportBtns = () => {
     $('#printpdf').on('click', () => {
         // exportData();
         NProgress.start();
@@ -31,6 +58,16 @@ let initEvent = () => {
     })
 }
 
+let deleteAPI = (id,nonce) => {
+    let url = `delete.json?id=${id}&nonce=${nonce}&tbl=sys_api`;
+    axios({
+        url
+    }).then(res=>{
+        lib.tip('数据成功删除')
+    })
+
+}
+
 let refreshData = () => {
     var dataUrl = '?id=1&mode=array&nonce=asd&cache=0';
 
@@ -44,6 +81,7 @@ let refreshData = () => {
             delay: 5,
             type: 2
         })
+        tblData = res.data;
         renderTable(res);
     })
 }
@@ -54,12 +92,18 @@ let renderTable = res => {
     exportConfig.body = [];
 
     let header = res.header.map(item => `<th>${item}</th>`);
-    $('.result-content thead').html(`<tr>${header.join('')}</tr>`);
+    $('.result-content thead').html(`<tr>${header.join('')}<th class="operator">操作</th></tr>`);
+    renderTBody();
+    initDelBtn();
+}
 
-    let strs = res.data.map((row, i) => {
+let renderTBody = () => {
+    let strs = tblData.map((row, i) => {
         exportConfig.body.push([i + 1, ...row]);
         let trStr = row.map(item => `<td>${item}</td>`).join('');
-        return `<tr>${trStr}</tr>`;
+        let btnDel = `<button type="button" name="del" data-toggle="confirmation" data-original-title="确认删除本接口?" data-singleton="true" data-btn-ok-label="是" data-btn-cancel-label="否" data-id="${row[0]}" data-nonce="${row[3]}" class="btn red-haze btn-sm">删除</button>`;
+        let btnEdit = `<button type="button" name="edit" data-id="${row[0]}" class="btn blue-steel btn-sm">编辑</button>`;
+        return `<tr>${trStr}<td>${btnEdit}${btnDel}</td></tr>`;
     })
 
     $('.result-content tbody').html(strs.join(''));
