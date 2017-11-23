@@ -27,6 +27,32 @@ let exportConfig = {
     orientation: 'landscape' // 'portrit'
 };
 
+let addApi = () => {
+    let data = {
+            api_name: $('#addapi [name="api_name"]').val(),
+            db_id: $('#addapi [name="db_id"]').val(),
+            sql: $('#addapi [name="sql"]').val(),
+            param: $('#addapi [name="param"]').val()
+        }
+        // 编辑模式
+    if (curType) {
+        updateDataAfterEditing(data);
+    }
+
+    resetNewModal();
+}
+
+let updateDataAfterEditing = data => {
+    let dbname = select2.text('db_id');
+    // 更新数据
+    let dataIdx = tblData.findIndex(item => item[0] == editingData[0]);
+    tblData[dataIdx][1] = dbname;
+    tblData[dataIdx][2] = data.api_name;
+    tblData[dataIdx][4] = data.sql;
+    tblData[dataIdx][5] = data.param;
+    tblData[dataIdx][8] = data.db_id;
+    renderTBody();
+}
 
 let initEvent = () => {
     exportConfig.title = 'API列表';
@@ -38,12 +64,18 @@ let initEvent = () => {
         curType = addType.NEW;
         resetNewModal();
     })
+
+    $('#api-saved').on('click', () => {
+        $('#addapi').modal('hide');
+        addApi();
+    })
 }
 
 let resetNewModal = () => {
     $('#addapi input,#addapi textarea').val('');
     select2.value('db_id', ' ');
     $('#api-saved').text('添加');
+    $('#addapi .modal-title').text('新增接口');
 }
 
 let initEditBtn = () => {
@@ -57,7 +89,7 @@ let initEditBtn = () => {
         $('#addapi [name="param"]').val(editingData[5]);
         $('#addapi [name="sql"]').val(editingData[4]);
         $('#api-saved').text('更新');
-
+        $('#addapi .modal-title').text('修改接口');
         $('#addapi').modal();
     })
 }
@@ -113,11 +145,6 @@ let refreshData = () => {
         method: 'get'
     }
     axios(option).then(res => {
-        // lib.tips({
-        //     text: '查询完毕',
-        //     delay: 5,
-        //     type: 2
-        // })
         tblData = res.data;
         renderTable(res);
     })
@@ -143,7 +170,7 @@ let renderTBody = () => {
         let trStr = row.map(item => `<td>${item}</td>`).join('');
         let btnDel = `<button type="button" name="del" data-toggle="confirmation" data-original-title="确认删除本接口?" data-singleton="true" data-btn-ok-label="是" data-btn-cancel-label="否" data-id="${row[0]}" data-nonce="${row[3]}" class="btn red-haze btn-sm">删除</button>`;
         let btnEdit = `<button type="button" name="edit" data-id="${row[0]}" class="btn blue-steel btn-sm">编辑</button>`;
-        return `<tr>${trStr}<td>${btnEdit}${btnDel}</td></tr>`;
+        return `<tr data-id="${row[0]}">${trStr}<td>${btnEdit}${btnDel}</td></tr>`;
     })
 
     $('.result-content tbody').html(strs.join(''));
