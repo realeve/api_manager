@@ -27,19 +27,37 @@ let exportConfig = {
     orientation: 'landscape' // 'portrit'
 };
 
-let addApi = () => {
+let addApi = async() => {
+    // 此处需将空字符，全角问号等全部替换
     let data = {
-            api_name: $('#addapi [name="api_name"]').val(),
-            db_id: $('#addapi [name="db_id"]').val(),
-            sql: $('#addapi [name="sql"]').val(),
-            param: $('#addapi [name="param"]').val()
-        }
-        // 编辑模式
-    if (curType) {
-        updateDataAfterEditing(data);
+        api_name: $('#addapi [name="api_name"]').val(),
+        db_id: $('#addapi [name="db_id"]').val(),
+        sqlstr: $('#addapi [name="sqlstr"]').val(),
+        param: $('#addapi [name="param"]').val(),
+        tbl: 'sys_api'
     }
-
-    resetNewModal();
+    data.sqlstr = data.sqlstr.replace(/\s/g, ' ').replace(/  /g, ' ').replace(/？/g, '?').replace(/, /g, ',').trim();
+    if (curType) {
+        // 更新数据时需加入  condition条件，使用key-value形式，后台自动处理
+        data.condition = {
+            id: editingData[0]
+        };
+    }
+    let url = curType == addType.NEW ? 'insert.json' : 'update.json';
+    await axios({
+        url,
+        data,
+        method: curType == addType.NEW ? 'post' : 'put'
+    }).then(res => {
+        // 编辑模式
+        if (curType) {
+            updateDataAfterEditing(data);
+        } else {
+            refreshData();
+        }
+        lib.tip('数据成功' + (curType ? '修改' : '添加'));
+        resetNewModal();
+    })
 }
 
 let updateDataAfterEditing = data => {
@@ -48,7 +66,7 @@ let updateDataAfterEditing = data => {
     let dataIdx = tblData.findIndex(item => item[0] == editingData[0]);
     tblData[dataIdx][1] = dbname;
     tblData[dataIdx][2] = data.api_name;
-    tblData[dataIdx][4] = data.sql;
+    tblData[dataIdx][4] = data.sqlstr;
     tblData[dataIdx][5] = data.param;
     tblData[dataIdx][8] = data.db_id;
     renderTBody();
@@ -87,7 +105,7 @@ let initEditBtn = () => {
         $('#addapi [name="api_name"]').val(editingData[2]);
         select2.value('db_id', editingData[8]);
         $('#addapi [name="param"]').val(editingData[5]);
-        $('#addapi [name="sql"]').val(editingData[4]);
+        $('#addapi [name="sqlstr"]').val(editingData[4]);
         $('#api-saved').text('更新');
         $('#addapi .modal-title').text('修改接口');
         $('#addapi').modal();
