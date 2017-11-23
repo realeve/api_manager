@@ -36,7 +36,17 @@ let addApi = async() => {
         param: $('#addapi [name="param"]').val(),
         tbl: 'sys_api'
     }
+
+    // 去除无效字符
     data.sqlstr = data.sqlstr.replace(/\s/g, ' ').replace(/  /g, ' ').replace(/？/g, '?').replace(/, /g, ',').trim();
+
+    // 去除param中数字部分，禁止1=1此类问题出现
+    if (data.param != '') {
+        let paramData = data.param.split(',');
+        paramData.filter(item => parseInt(item) != item);
+        data.param = paramData.join(',');
+    }
+
     if (curType) {
         // 更新数据时需加入  condition条件，使用key-value形式，后台自动处理
         data.condition = {
@@ -101,10 +111,11 @@ let initEditBtn = () => {
         let id = $(this).data('id');
         curType = addType.EDIT;
         editingData = tblData.filter(item => item[0] == id)[0];
-
         $('#addapi [name="api_name"]').val(editingData[2]);
         select2.value('db_id', editingData[8]);
-        $('#addapi [name="param"]').val(editingData[5]);
+        // 待调试
+        $('#addapi [name="param"]').tagsinput(editingData[5]);
+
         $('#addapi [name="sqlstr"]').val(editingData[4]);
         $('#api-saved').text('更新');
         $('#addapi .modal-title').text('修改接口');
