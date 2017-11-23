@@ -1,4 +1,5 @@
 import pinyin from './pinyin';
+import { axios } from '../../common/axios';
 
 let matchStart = (term, text) => {
     term = term.toUpperCase();
@@ -19,7 +20,7 @@ let init = () => {
 }
 
 // 获取select2值
-let value = (name, val) => $("select[name='" + name + "']").select2('val', val);
+let value = (name, val) => $("select[name='" + name + "']").select2('val', val + '');
 
 // 重置值为空
 let reset = name => value(name, '');
@@ -43,9 +44,7 @@ let render = (name, data) => {
 
 // https://select2.org/data-sources/ajax
 let renderWithUrl = async(name, url) => {
-    let data = await $.ajax({
-        url: './json/orgname.json'
-    }).then(data => data);
+    let data = await axios({ url }).then(res => res.data);
     render(name, data);
 }
 

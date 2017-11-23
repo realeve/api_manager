@@ -1,0 +1,46 @@
+<div id="addapi" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">新增接口</h4>
+            </div>
+            <div class="modal-body">
+                <div class="scroller" style="height:300px" data-always-visible="1" data-rail-visible1="1">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">接口名称</label>
+                                <div class="col-md-10">
+                                    <input type="text" name="api_name" class="form-control" placeholder="请输入接口名称">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">数据库</label>
+                                <div class="col-md-10">
+                                    <select type="text" name="db_id" class="form-control select2"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">参数</label>
+                                <div class="col-md-10">
+                                    <input type="text" name="param" class="form-control" placeholder="请输入查询参数，默认不输入">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">sql查询语句</label>
+                                <div class="col-md-10">
+                                    <textarea type="text" name="sql" class="form-control" placeholder="请输入查询语句，查询条件用半角?代替，参数顺序保持一致" rows="5"></textarea>
+                                </div>
+                            </div>
+                    </form>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn dark btn-outline">关闭</button>
+                    <button type="button" class="btn green-jungle" id="api-saved">添加</button>
+                </div>
+            </div>
+        </div>
+    </div>

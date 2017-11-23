@@ -1,6 +1,24 @@
 import data2file from '../common/exportTable';
 import lib from '../common/lib';
 import { axios } from '../common/axios';
+
+import select2 from './select2/select2';
+
+let getDBName = async() => {
+    await select2.renderWithUrl('db_id', '?id=2&mode=object&nonce=6119bacd08&cache=0');
+}
+
+let addType = {
+    NEW: 0,
+    EDIT: 1
+};
+
+let curType = addType.NEW;
+// 原始数据
+let tblData = [];
+// 编辑中数据;
+let editingData = [];
+
 let exportConfig = {
     title: '',
     header: [],
@@ -9,19 +27,38 @@ let exportConfig = {
     orientation: 'landscape' // 'portrit'
 };
 
-let tblData = [];
 
 let initEvent = () => {
     exportConfig.title = 'API列表';
     exportConfig.message = '';
     initExportBtns();
     initEditBtn();
+
+    $('#add').on('click', () => {
+        curType = addType.NEW;
+        resetNewModal();
+    })
+}
+
+let resetNewModal = () => {
+    $('#addapi input,#addapi textarea').val('');
+    select2.value('db_id', ' ');
+    $('#api-saved').text('添加');
 }
 
 let initEditBtn = () => {
     $('tbody').on('click', 'button[name="edit"]', function() {
         let id = $(this).data('id');
-        lib.tip('编辑' + id);
+        curType = addType.EDIT;
+        editingData = tblData.filter(item => item[0] == id)[0];
+
+        $('#addapi [name="api_name"]').val(editingData[2]);
+        select2.value('db_id', editingData[8]);
+        $('#addapi [name="param"]').val(editingData[5]);
+        $('#addapi [name="sql"]').val(editingData[4]);
+        $('#api-saved').text('更新');
+
+        $('#addapi').modal();
     })
 }
 
@@ -29,7 +66,7 @@ let initDelBtn = () => {
     $('tbody').on('confirmed.bs.confirmation', 'button[name="del"]', function() {
         let id = $(this).data('id');
         deleteDataFromIdx(id);
-        deleteAPI(id,$(this).data('nonce'));
+        deleteAPI(id, $(this).data('nonce'));
         $(this).parents('tr').remove();
     });
 }
@@ -58,36 +95,39 @@ let initExportBtns = () => {
     })
 }
 
-let deleteAPI = (id,nonce) => {
+let deleteAPI = (id, nonce) => {
     let url = `delete.json?id=${id}&nonce=${nonce}&tbl=sys_api`;
     axios({
         url
-    }).then(res=>{
+    }).then(res => {
         lib.tip('数据成功删除')
     })
 
 }
 
 let refreshData = () => {
-    var dataUrl = '?id=1&mode=array&nonce=asd&cache=0';
+    var dataUrl = '?id=1&mode=array&nonce=e61799e7ab&cache=0';
 
     var option = {
         url: dataUrl,
         method: 'get'
     }
     axios(option).then(res => {
-        lib.tips({
-            text: '查询完毕',
-            delay: 5,
-            type: 2
-        })
+        // lib.tips({
+        //     text: '查询完毕',
+        //     delay: 5,
+        //     type: 2
+        // })
         tblData = res.data;
         renderTable(res);
     })
 }
 
 let renderTable = res => {
-
+    if (res.rows == 0) {
+        $('.result-content tbody').html('<tr><td class="text-center">未查询到数据</td></tr>');
+        return;
+    }
     exportConfig.header = ['#', ...res.header];
     exportConfig.body = [];
 
@@ -108,9 +148,11 @@ let renderTBody = () => {
 
     $('.result-content tbody').html(strs.join(''));
 }
-let init = () => {
+let init = async() => {
     initEvent();
     refreshData();
+    await getDBName();
+    select2.init();
 }
 export default {
     init

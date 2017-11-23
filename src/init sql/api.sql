@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2017-11-21 23:01:41
+Date: 2017-11-24 01:10:07
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,12 +29,13 @@ CREATE TABLE `sys_api` (
   `rec_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_api
 -- ----------------------------
-INSERT INTO `sys_api` VALUES ('1', '0000000001', ' 接口列表', 'asd', 'SELECT a.id,a.db_id 数据库id,a.api_name 接口名称,a.nonce,a.sql 查询语句,a.param 查询参数,a.rec_time 建立时间,a.update_time 最近更新 FROM sys_api AS a', '', '2017-07-30 03:07:37', '2017-11-21 22:30:35');
+INSERT INTO `sys_api` VALUES ('1', '0000000001', ' 接口列表', 'e61799e7ab', 'SELECT a.id,a.db_id 数据库id,a.api_name 接口名称,a.nonce,a.sql 查询语句,(case when isnull(a.param) then \'\' else a.param end) 查询参数,a.rec_time 建立时间,a.update_time 最近更新 FROM sys_api  AS a where a.id>1', '', '2017-07-30 03:07:37', '2017-11-24 01:08:57');
+INSERT INTO `sys_api` VALUES ('2', '0000000001', '数据库列表', '6119bacd08', 'SELECT a.id,a.db_name text FROM sys_database AS a', null, '2017-11-24 00:49:19', '2017-11-24 00:55:09');
 
 -- ----------------------------
 -- Table structure for sys_database
@@ -72,6 +73,11 @@ CREATE TABLE `sys_user` (
 DROP TRIGGER IF EXISTS `api_rectime`;
 DELIMITER ;;
 CREATE TRIGGER `api_rectime` BEFORE INSERT ON `sys_api` FOR EACH ROW SET new.rec_time = CURRENT_TIMESTAMP
+;;
+DELIMITER ;
+DROP TRIGGER IF EXISTS `api_nonce`;
+DELIMITER ;;
+CREATE TRIGGER `api_nonce` BEFORE INSERT ON `sys_api` FOR EACH ROW set new.nonce = substring(MD5(RAND()*100),1,10)
 ;;
 DELIMITER ;
 DROP TRIGGER IF EXISTS `api_update`;
