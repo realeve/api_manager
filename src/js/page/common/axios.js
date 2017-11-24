@@ -4,7 +4,7 @@ import lib from './lib';
 
 let refreshNoncer = async() => {
     // let refUrl = location.href.split('?')[0].split('#')[0];
-    let url = apps.host + 'authorize.json';
+    let url = apps.host + 'authorize.json?user=develop&psw=111111';
     return await http.get(url).then(res => res.data.token);
 }
 
