@@ -24,24 +24,36 @@ var apps = (function() {
         $('.logo-default').text('JUNIU');
     };
 
-    // 菜单用户信息
-    var loadUserInfo = function() {
-        var user = window.localStorage.getItem('user');
-        if (user === null) {
-            return;
-        }
-        userInfo.name = JSON.parse(user).name;
-        $('.nav .username').text(userInfo.name);
-    };
-
     var init = function() {
         handleMenuInfo();
-        loadUserInfo();
+        // if (window.location.pathname.indexOf('login.html') != -1) {
+        //     loadUserInfo();
+        // }
     }
+
+    var loadUserInfo = function() {
+        var isLogin = window.location.pathname.indexOf('login.html') > -1;
+        if (isLogin) {
+            return;
+        }
+        var userInfo = window.localStorage.getItem('user');
+        if (userInfo == null) {
+            window.location.href = './login.html';
+            return {
+                token: ''
+            };
+        }
+        userInfo = JSON.parse(userInfo);
+        apps.token = userInfo.token;
+        $('.nav .username').text(userInfo.fullname);
+        return userInfo;
+    };
+
     return {
         init: init,
         host: host,
-        token: token
+        token: token,
+        loadUserInfo: loadUserInfo
     }
 })()
 

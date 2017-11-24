@@ -1,5 +1,5 @@
-import md5 from './valid';
 import lib from '../common/lib';
+import axios from 'axios';
 
 var initEvent = function() {
 
@@ -47,9 +47,7 @@ var initEvent = function() {
         },
 
         submitHandler: function(form) {
-            // form.submit(); // form validation success, call ajax form submit
-            handleRemember();
-            window.location.href = './index.html';
+            login();
         }
     });
 
@@ -81,31 +79,45 @@ var initEvent = function() {
         $('.forget-form').hide();
     });
 }
-let handleRemember = () => {
-    let userInfo = window.localStorage.getItem('user');
-    if (userInfo !== null) {
-        userInfo = JSON.parse(userInfo);
-        if (userInfo.name == $('[name="username"]').val()) {
-            return;
-        }
-    }
-    userInfo = {
-        name: $('[name="username"]').val(),
-        psw: md5.encode($('[name="password"]').val(), true)
+
+
+
+let login = () => {
+    let params = {
+        user: $('[name="username"]').val(),
+        psw: $('[name="password"]').val()
+    };
+
+    axios({
+        params,
+        url: apps.host + 'authorize.json'
+    }).then(res => {
+        apps.token = res.token;
+        saveUserInfo(res.data);
+    }).catch(res => {
+        libs.tip('用户名或密码错误，登录失败.');
+    })
+}
+
+
+let saveUserInfo = res => {
+    let userInfo = {
+        user: $('[name="username"]').val(),
+        fullname: res.fullname,
+        token: res.token
     }
     window.localStorage.setItem('user', JSON.stringify(userInfo));
+    window.location.href = './index.html';
 }
+
 let loadUserInfo = () => {
     let userInfo = window.localStorage.getItem('user');
     if (userInfo === null) {
         return;
     }
     userInfo = JSON.parse(userInfo);
-    $('[name="username"]').val(userInfo.name);
-    $('[name="password"]').val(userInfo.psw);
+    $('[name="username"]').val(userInfo.user);
 }
-
-
 
 let init = function() {
 

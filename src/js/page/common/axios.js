@@ -4,16 +4,23 @@ import lib from './lib';
 
 let refreshNoncer = async() => {
     // let refUrl = location.href.split('?')[0].split('#')[0];
+    // 此时可将引用url链接作为 url 参数请求登录，作为强校验；
+    // 本部分涉及用户名和密码，用户需自行在服务端用curl申请得到token，勿放置在前端; 
     let url = apps.host + 'authorize.json?user=develop&psw=111111';
     return await http.get(url).then(res => res.data.token);
 }
+
 
 // 自动处理token更新，data 序列化等
 export let axios = async option => {
 
     // token为空时自动获取
     if (apps.token == '') {
-        apps.token = await refreshNoncer();
+
+        let user = apps.loadUserInfo();
+        if (user.token == '') {
+            apps.token = await refreshNoncer();
+        }
     }
 
     option = Object.assign(option, {
