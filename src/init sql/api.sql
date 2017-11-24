@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2017-11-24 01:10:07
+Date: 2017-11-24 15:43:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,7 +24,7 @@ CREATE TABLE `sys_api` (
   `db_id` int(10) unsigned zerofill DEFAULT '0000000001',
   `api_name` varchar(255) DEFAULT NULL,
   `nonce` varchar(255) DEFAULT NULL,
-  `sql` text,
+  `sqlstr` text,
   `param` varchar(255) DEFAULT NULL,
   `rec_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -34,7 +34,7 @@ CREATE TABLE `sys_api` (
 -- ----------------------------
 -- Records of sys_api
 -- ----------------------------
-INSERT INTO `sys_api` VALUES ('1', '0000000001', ' 接口列表', 'e61799e7ab', 'SELECT a.id,a.db_id 数据库id,a.api_name 接口名称,a.nonce,a.sql 查询语句,(case when isnull(a.param) then \'\' else a.param end) 查询参数,a.rec_time 建立时间,a.update_time 最近更新 FROM sys_api  AS a where a.id>1', '', '2017-07-30 03:07:37', '2017-11-24 01:08:57');
+INSERT INTO `sys_api` VALUES ('1', '0000000001', ' 接口列表', 'e61799e7ab', 'SELECT a.id, b.db_name 数据库, a.api_name 接口名称, a.nonce, a.sqlstr 查询语句, ( CASE WHEN isnull(a.param) THEN \'\' ELSE a.param END ) 查询参数, a.rec_time 建立时间, a.update_time 最近更新, a.db_id FROM sys_api a INNER JOIN sys_database b on a.db_id = b.id WHERE a.id >2', '', '2017-07-30 03:07:37', '2017-11-24 02:39:56');
 INSERT INTO `sys_api` VALUES ('2', '0000000001', '数据库列表', '6119bacd08', 'SELECT a.id,a.db_name text FROM sys_database AS a', null, '2017-11-24 00:49:19', '2017-11-24 00:55:09');
 
 -- ----------------------------
@@ -70,14 +70,14 @@ CREATE TABLE `sys_user` (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-DROP TRIGGER IF EXISTS `api_rectime`;
-DELIMITER ;;
-CREATE TRIGGER `api_rectime` BEFORE INSERT ON `sys_api` FOR EACH ROW SET new.rec_time = CURRENT_TIMESTAMP
-;;
-DELIMITER ;
 DROP TRIGGER IF EXISTS `api_nonce`;
 DELIMITER ;;
 CREATE TRIGGER `api_nonce` BEFORE INSERT ON `sys_api` FOR EACH ROW set new.nonce = substring(MD5(RAND()*100),1,10)
+;;
+DELIMITER ;
+DROP TRIGGER IF EXISTS `api_rectime`;
+DELIMITER ;;
+CREATE TRIGGER `api_rectime` BEFORE INSERT ON `sys_api` FOR EACH ROW SET new.rec_time = CURRENT_TIMESTAMP,new.update_time = CURRENT_TIMESTAMP
 ;;
 DELIMITER ;
 DROP TRIGGER IF EXISTS `api_update`;
