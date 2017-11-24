@@ -8,6 +8,7 @@ var apps = (function() {
     // 业务经办人
     var userInfo = {
         name: '',
+        uid: '',
         fullname: '',
         org: ''
     };
@@ -26,9 +27,7 @@ var apps = (function() {
 
     var init = function() {
         handleMenuInfo();
-        // if (window.location.pathname.indexOf('login.html') != -1) {
-        //     loadUserInfo();
-        // }
+        loadUserInfo();
     }
 
     var loadUserInfo = function() {
@@ -36,23 +35,30 @@ var apps = (function() {
         if (isLogin) {
             return;
         }
-        var userInfo = window.localStorage.getItem('user');
-        if (userInfo == null) {
+        var user = window.localStorage.getItem('user');
+        if (user == null) {
             window.location.href = './login.html';
             return {
                 token: ''
             };
         }
-        userInfo = JSON.parse(userInfo);
-        apps.token = userInfo.token;
-        $('.nav .username').text(userInfo.fullname);
-        return userInfo;
+        user = JSON.parse(user);
+        apps.token = user.token;
+        $('.nav .username').text(user.fullname);
+
+        userInfo.name = user.user;
+        userInfo.fullname = user.fullname;
+        var extraInfo = atob(user.token.split('.')[1]);
+        userInfo.uid = JSON.parse(extraInfo).extra.uid;
+
+        return user;
     };
 
     return {
         init: init,
         host: host,
         token: token,
+        userInfo: userInfo,
         loadUserInfo: loadUserInfo
     }
 })()

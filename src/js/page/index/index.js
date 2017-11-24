@@ -39,7 +39,8 @@ let addApi = async() => {
         db_id: $('#addapi [name="db_id"]').val(),
         sqlstr: $('#addapi [name="sqlstr"]').val(),
         param: $('#addapi [name="param"]').val(),
-        tbl: 'sys_api'
+        tbl: 'sys_api',
+        uid: apps.userInfo.uid
     }
 
     // 去除无效字符
@@ -54,7 +55,8 @@ let addApi = async() => {
     if (curType) {
         // 更新数据时需加入  condition条件，使用key-value形式，后台自动处理
         data.condition = {
-            id: editingData[0]
+            id: editingData[0],
+            uid: apps.userInfo.uid
         };
     }
 
@@ -174,11 +176,14 @@ let initExportBtns = () => {
 }
 
 let deleteAPI = (id, nonce) => {
+    // 参数说明：
+    // 此处nonce不是必须，但对sys_api删除时需保证id,nonce,uid一致
     axios({
         method: 'delete',
         data: {
             id,
             nonce,
+            uid: apps.userInfo.uid,
             tbl: 'sys_api'
         }
     }).then(res => {
