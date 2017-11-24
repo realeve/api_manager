@@ -3,8 +3,8 @@ import qs from 'qs';
 import lib from './lib';
 
 let refreshNoncer = async() => {
-    let refUrl = location.href.split('?')[0].split('#')[0];
-    let url = apps.host + 'authorize?url=' + encodeURIComponent(refUrl);
+    // let refUrl = location.href.split('?')[0].split('#')[0];
+    let url = apps.host + 'authorize.json';
     return await http.get(url).then(res => res.data.token);
 }
 

@@ -64,7 +64,7 @@ let alert = (setting = {
         type: typeArr[setting.type], // alert's type 
         message: setting.text, // alert's message
         close: true, // make alert closable 
-        reset: true, // close all previouse alerts first 
+        reset: false, // close all previouse alerts first 
         focus: true, // auto scroll to the alert after shown 
         closeInSeconds: setting.delay, // auto close after defined seconds 
         icon: 'fa fa-check' // put icon class before the message 

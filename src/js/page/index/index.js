@@ -5,6 +5,8 @@ import { axios } from '../common/axios';
 import select2 from './select2/select2';
 import language from './datatable';
 
+import preview from './preview';
+
 let getDBName = async() => {
     await select2.renderWithUrl('db_id', '?id=2&mode=object&nonce=6119bacd08&cache=0');
 }
@@ -84,6 +86,17 @@ let initEvent = () => {
     initExportBtns();
     initEditBtn();
 
+    $('tbody').on('click', '[name="preview"]', function() {
+        let url = $(this).data('url');
+        axios({ url }).then(data => {
+            lib.alert({ text: "调用url: " + apps.host + url });
+            lib.alert({
+                text: '返回结果:<br><br>' + JSON.stringify(data), //.replace(/,/g, ',<br>').replace(/{/g, '{<br>').replace(/}/g, '<br>}').replace(/\[/g, '<br>[')
+                type: 1
+            })
+        })
+    })
+
     $('#add').on('click', () => {
         curType = addType.NEW;
         resetNewModal();
@@ -97,6 +110,7 @@ let initEvent = () => {
     $('#reset-tag').on('click', () => {
         $('[name="param"]').tagsinput('removeAll');
     })
+
 }
 
 let resetNewModal = () => {
@@ -207,7 +221,8 @@ let renderTBody = () => {
         exportConfig.body.push([i + 1, ...row]);
         let btnDel = `<button type="button" name="del" data-toggle="confirmation" data-original-title="确认删除本接口?" data-singleton="true" data-btn-ok-label="是" data-btn-cancel-label="否" data-id="${row[0]}" data-nonce="${row[3]}" class="btn red-haze btn-sm">删除</button>`;
         let btnEdit = `<button type="button" name="edit" data-id="${row[0]}" class="btn blue-steel btn-sm">编辑</button>`;
-        row.push(btnEdit + btnDel);
+        let btnPreview = `<button type="button" name="preview" data-url="?id=${row[0]}&nonce=${row[3]}" class="btn btn-sm">预览</button>`;
+        row.push(btnEdit + btnDel + (row[5].trim() == '' ? btnPreview : ''));
         return row;
     })
 
