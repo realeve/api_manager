@@ -94,7 +94,7 @@ let login = () => {
     }).then(res => {
         saveUserInfo(res.data);
     }).catch(res => {
-        libs.tip('用户名或密码错误，登录失败.');
+        lib.tip('用户名或密码错误，登录失败.');
     })
 }
 

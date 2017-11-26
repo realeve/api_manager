@@ -11,6 +11,12 @@ let matchStart = (term, text) => {
 
 let init = () => {
     $.fn.select2.defaults.set("theme", "bootstrap");
+
+    $(".select2-allow-clear").select2({
+        allowClear: true,
+        width: null
+    });
+
     $.fn.select2.amd.require(['select2/compat/matcher'], function(oldMatcher) {
         $(".select2, .select2-multiple").select2({
             matcher: oldMatcher(matchStart),

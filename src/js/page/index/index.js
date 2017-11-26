@@ -7,6 +7,8 @@ import language from './datatable';
 
 import preview from './preview';
 
+import tableApp from '../common/renderTable';
+
 let getDBName = async() => {
     await select2.renderWithUrl('db_id', '?id=2&mode=object&nonce=6119bacd08&cache=0');
 }
@@ -66,20 +68,7 @@ let addApi = async() => {
     }).then(res => {
         refreshData();
         lib.tip('数据成功' + (curType ? '修改' : '添加'));
-        resetNewModal();
     })
-}
-
-let updateDataAfterEditing = data => {
-    let dbname = select2.text('db_id');
-    // 更新数据
-    let dataIdx = tblData.findIndex(item => item[0] == editingData[0]);
-    tblData[dataIdx][1] = dbname;
-    tblData[dataIdx][2] = data.api_name;
-    tblData[dataIdx][4] = data.sqlstr;
-    tblData[dataIdx][5] = data.param;
-    tblData[dataIdx][8] = data.db_id;
-    renderTBody();
 }
 
 let initEvent = () => {
@@ -145,16 +134,16 @@ let initEditBtn = () => {
 let initDelBtn = () => {
     $('tbody').on('confirmed.bs.confirmation', 'button[name="del"]', function() {
         let id = $(this).data('id');
-        deleteDataFromIdx(id);
+        // deleteDataFromIdx(id);
+        // $(this).parents('tr').remove();
         deleteAPI(id, $(this).data('nonce'));
-        $(this).parents('tr').remove();
     });
 }
 
-let deleteDataFromIdx = idx => {
-    let dataIdx = tblData.findIndex(item => item[0] == idx);
-    tblData.splice(dataIdx, 1);
-}
+// let deleteDataFromIdx = idx => {
+//     let dataIdx = tblData.findIndex(item => item[0] == idx);
+//     tblData.splice(dataIdx, 1);
+// }
 
 let initExportBtns = () => {
     $('#printpdf').on('click', () => {
@@ -187,13 +176,14 @@ let deleteAPI = (id, nonce) => {
             tbl: 'sys_api'
         }
     }).then(res => {
-        lib.tip('数据成功删除')
+        lib.tip('数据成功删除');
+        refreshData();
     })
 }
 
 let refreshData = () => {
     var option = {
-        method: 'get',
+        // method: 'get',
         params: {
             id: 1,
             mode: 'array',
@@ -203,43 +193,30 @@ let refreshData = () => {
     }
     axios(option).then(res => {
         tblData = res.data;
-        renderTable(res);
+        exportConfig.header = ['#', ...res.header];
+        exportConfig.body = res.data.map((row, i) => [i + 1, ...row]);
+
+        res.data = res.data.map((row, i) => {
+            let btnDel = `<button type="button" name="del" data-toggle="confirmation" data-original-title="确认删除本接口?" data-singleton="true" data-btn-ok-label="是" data-btn-cancel-label="否" data-id="${row[0]}" data-nonce="${row[3]}" class="btn red-haze btn-sm">删除</button>`;
+            let btnEdit = `<button type="button" name="edit" data-id="${row[0]}" class="btn blue-steel btn-sm">编辑</button>`;
+            let btnPreview = `<button type="button" name="preview" data-url="?id=${row[0]}&nonce=${row[3]}" class="btn btn-sm">预览</button>`;
+            row.push(btnEdit + btnDel + (row[5].trim() == '' ? btnPreview : ''));
+            return row;
+        });
+
+        initDatatable(res);
+        resetNewModal();
     })
 }
 
-let renderTable = res => {
-    if (res.rows == 0) {
-        $('.result-content tbody').html('<tr><td class="text-center">未查询到数据</td></tr>');
-        return;
-    }
-    exportConfig.header = ['#', ...res.header];
-    exportConfig.body = [];
-
-    let header = res.header.map(item => `<th>${item}</th>`);
-    $('.result-content thead').html(`<tr>${header.join('')}<th class="operator">操作</th></tr>`);
-    renderTBody();
-}
 
 let table = null;
-let renderTBody = () => {
-    let renderData = tblData.map((row, i) => {
-        exportConfig.body.push([i + 1, ...row]);
-        let btnDel = `<button type="button" name="del" data-toggle="confirmation" data-original-title="确认删除本接口?" data-singleton="true" data-btn-ok-label="是" data-btn-cancel-label="否" data-id="${row[0]}" data-nonce="${row[3]}" class="btn red-haze btn-sm">删除</button>`;
-        let btnEdit = `<button type="button" name="edit" data-id="${row[0]}" class="btn blue-steel btn-sm">编辑</button>`;
-        let btnPreview = `<button type="button" name="preview" data-url="?id=${row[0]}&nonce=${row[3]}" class="btn btn-sm">预览</button>`;
-        row.push(btnEdit + btnDel + (row[5].trim() == '' ? btnPreview : ''));
-        return row;
-    })
-
+let initDatatable = res => {
     if (initStatus) {
         table.fnDestroy();
     }
 
-    let strs = renderData.map((row, i) => {
-        let trStr = row.map(item => `<td>${item}</td>`).join('');
-        return `<tr>${trStr}</tr>`;
-    })
-    $('.result-content tbody').html(strs.join(''));
+    tableApp.render(res);
 
     table = $('.result-content .table').dataTable({
         language,
@@ -265,10 +242,11 @@ let renderTBody = () => {
                 }
             });
             initDelBtn();
+            initStatus = true;
         }
     });
-    initStatus = true;
 }
+
 let init = async() => {
     initEvent();
     refreshData();
