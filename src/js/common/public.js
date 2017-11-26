@@ -22,7 +22,7 @@ var apps = (function() {
         var dom = $('.nav').find('[href="' + menuItem + '"]')
         dom.parent().addClass('active');
 
-        $('.logo-default').text('JUNIU');
+        $('.logo-default').text('API Manager');
     };
 
     var init = function() {
