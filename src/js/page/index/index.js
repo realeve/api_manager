@@ -203,7 +203,6 @@ let refreshData = () => {
             row.push(btnEdit + btnDel + (row[5].trim() == '' ? btnPreview : ''));
             return row;
         });
-
         initDatatable(res);
         resetNewModal();
     })
@@ -218,6 +217,11 @@ let initDatatable = res => {
 
     tableApp.render(res);
 
+    if (res.rows == 0) {
+        $('#printpdf').parent().hide();
+        return;
+    }
+    $('#printpdf').parent().show();
     table = $('.result-content .table').dataTable({
         language,
         destroy: true,
