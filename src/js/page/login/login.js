@@ -92,7 +92,6 @@ let login = () => {
         params,
         url: apps.host + 'authorize.json'
     }).then(res => {
-        apps.token = res.token;
         saveUserInfo(res.data);
     }).catch(res => {
         libs.tip('用户名或密码错误，登录失败.');
@@ -106,6 +105,7 @@ let saveUserInfo = res => {
         fullname: res.fullname,
         token: res.token
     }
+    apps.token = res.token;
     window.localStorage.setItem('user', JSON.stringify(userInfo));
     window.location.href = './index.html';
 }
