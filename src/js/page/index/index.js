@@ -5,8 +5,6 @@ import { axios } from '../common/axios';
 import select2 from './select2/select2';
 import language from './datatable';
 
-import preview from './preview';
-
 import tableApp from '../common/renderTable';
 
 let getDBName = async() => {
@@ -78,7 +76,7 @@ let initEvent = () => {
     initEditBtn();
 
     $('tbody').on('click', '[name="preview"]', function() {
-        let url = $(this).data('url');
+        let url = $(this).data('url') + '&cache=5';
         axios({ url }).then(data => {
             lib.alert({ text: "调用url: " + apps.host + url });
             lib.alert({
