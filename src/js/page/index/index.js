@@ -186,7 +186,7 @@ let refreshData = () => {
             id: 1,
             mode: 'array',
             nonce: 'e61799e7ab',
-            cache: 0
+            cache: 10
         }
     }
     axios(option).then(res => {
