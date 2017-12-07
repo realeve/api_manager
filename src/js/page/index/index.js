@@ -42,10 +42,14 @@ let addApi = async() => {
         tbl: 'sys_api',
         uid: apps.userInfo.uid
     }
-
+    
+    if(data.sqlstr.includes("'")){
+        lib.tip('查询语句中包含单引号，服务端在数据组装时将报错，请用视图等方式解决该问题。')
+        return;
+    }
     // 去除无效字符
-    data.sqlstr = data.sqlstr.replace(/\s/g, ' ').replace(/  /g, ' ').replace(/？/g, '?').replace(/, /g, ',').trim();
-
+    data.sqlstr = data.sqlstr.replace(/\s/g, ' ').replace(/  /g, ' ').replace(/？/g, '?').replace(/, /g, ',').replace(/`/g, '').trim();
+    
     // 去除param中数字部分，禁止1=1此类问题出现
     if (data.param != '') {
         let paramData = data.param.split(',');
