@@ -8,7 +8,7 @@ import language from './datatable';
 import tableApp from '../common/renderTable';
 
 let getDBName = async() => {
-    await select2.renderWithUrl('db_id', '?id=2&mode=object&nonce=6119bacd08&cache=0');
+    await select2.renderWithUrl('db_id', '2/6119bacd08.json');
 }
 
 let addType = {
@@ -185,11 +185,11 @@ let deleteAPI = (id, nonce) => {
 
 let refreshData = () => {
     var option = {
-        // method: 'get',
+        url:'1/e61799e7ab/array.json',
         params: {
-            id: 1,
-            mode: 'array',
-            nonce: 'e61799e7ab',
+            // id: 1,
+            // mode: 'array'
+            // nonce: 'e61799e7ab',
             cache: 10
         }
     }

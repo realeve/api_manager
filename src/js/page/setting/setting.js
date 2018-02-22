@@ -20,10 +20,11 @@ let init = () => {
 
 let refreshData = async() => {
     return await axios({
+        url:'3/e4e497e849/array.json',
         params: {
-            id: 3,
-            nonce: 'e4e497e849',
-            mode: 'array',
+            // id: 3,
+            // nonce: 'e4e497e849',
+            // mode: 'array',
             cache: 0
         }
     }).then(res => {
