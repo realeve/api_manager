@@ -6,6 +6,7 @@ import select2 from './select2/select2';
 import language from './datatable';
 
 import tableApp from '../common/renderTable';
+const Clipboard = require('clipboard');
 
 let getDBName = async() => {
     await select2.renderWithUrl('db_id', '2/6119bacd08.json');
@@ -79,17 +80,6 @@ let initEvent = () => {
     initExportBtns();
     initEditBtn();
 
-    $('tbody').on('click', '[name="preview"]', function() {
-        let url = $(this).data('url') + '&cache=5';
-        axios({ url }).then(data => {
-            lib.alert({ text: "调用url: " + apps.host + url });
-            lib.alert({
-                text: '返回结果:<br><br>' + JSON.stringify(data), //.replace(/,/g, ',<br>').replace(/{/g, '{<br>').replace(/}/g, '<br>}').replace(/\[/g, '<br>[')
-                type: 1
-            })
-        })
-    })
-
     $('#add').on('click', () => {
         curType = addType.NEW;
         resetNewModal();
@@ -103,7 +93,6 @@ let initEvent = () => {
     $('#reset-tag').on('click', () => {
         $('[name="param"]').tagsinput('removeAll');
     })
-
 }
 
 let resetNewModal = () => {
@@ -126,7 +115,7 @@ let initEditBtn = () => {
         $('#addapi [name="param"]').tagsinput('removeAll');
         $('#addapi [name="param"]').tagsinput('add', editingData[5]);
 
-        $('#addapi [name="sqlstr"]').val(editingData[4]);
+        $('#addapi [name="sqlstr"]').val(editingData[4].data);
         $('#api-saved').text('更新');
         $('#addapi .modal-title').text('修改接口');
         $('#addapi').modal();
@@ -140,6 +129,36 @@ let initDelBtn = () => {
         // $(this).parents('tr').remove();
         deleteAPI(id, $(this).data('nonce'));
     });
+}
+
+let initCopyBtn = ()=>{
+    var btns = document.querySelectorAll('.copy');
+    var clipboard = new Clipboard(btns);
+    clipboard.on('success', function(e) {
+        lib.tip('调用代码已复制至剪贴板。');
+    });
+    
+    $('tbody').on('click', '[name="preview"]', function() {
+        let url = $(this).data('url') + '&cache=5';
+        let surl = $(this).data('surl');
+        const urls = [apps.host+url,
+            apps.host+surl+'.json?cache=5',
+            apps.host+surl+'.html',
+            apps.host+surl+'.html?mode=array',
+            apps.host+surl+'/array.json',
+            apps.host+surl+'/json.json'
+        ]
+        lib.alert({ text: "调用：" + urls.join('<br>或 ') });
+        if($(this).data('params').trim().length){
+            return;
+        }
+        axios({ url }).then(data => {
+            lib.alert({
+                text: '返回结果:<br><br>' + JSON.stringify(data), //.replace(/,/g, ',<br>').replace(/{/g, '{<br>').replace(/}/g, '<br>}').replace(/\[/g, '<br>[')
+                type: 1
+            })
+        })
+    })
 }
 
 // let deleteDataFromIdx = idx => {
@@ -195,14 +214,52 @@ let refreshData = () => {
     }
     axios(option).then(res => {
         tblData = res.data;
+        res.header[4] = {
+            data:res.header[4],
+            width:'450px'
+        }
         exportConfig.header = ['#', ...res.header];
         exportConfig.body = res.data.map((row, i) => [i + 1, ...row]);
 
         res.data = res.data.map((row, i) => {
+
+            const url = `/${row[0]}/${row[3]}.json`;
+            let params = '';
+            if(row[5].trim().length){
+                params = `{
+                    ${row[5]}
+                }`
+            };
+            
+            let text = `{
+                headers:{
+                    Authorization:'${window.apps.token}'
+                },
+                baseURL:'${window.apps.host}',
+                url:'${url}'
+            }`
+            if(params.length){
+                text = `{
+                    headers:{
+                        Authorization:'${window.apps.token}'
+                    },
+                    baseURL:'${window.apps.host}',
+                    url:'${url}',
+                    params:{${row[5]}},
+                }`;
+            }
+            const copyText = `axios(${text}).then(({data})=>{console.log(data)})`;
             let btnDel = `<button type="button" name="del" data-toggle="confirmation" data-original-title="确认删除本接口?" data-singleton="true" data-btn-ok-label="是" data-btn-cancel-label="否" data-id="${row[0]}" data-nonce="${row[3]}" class="btn red-haze btn-sm">删除</button>`;
             let btnEdit = `<button type="button" name="edit" data-id="${row[0]}" class="btn blue-steel btn-sm">编辑</button>`;
-            let btnPreview = `<button type="button" name="preview" data-url="?id=${row[0]}&nonce=${row[3]}" class="btn btn-sm">预览</button>`;
-            row.push(btnEdit + btnDel + (row[5].trim() == '' ? btnPreview : ''));
+            let btnCopy = `<button type="button" name="preview" data-params="${row[5]}" data-url="?id=${row[0]}&nonce=${row[3]}" data-surl="${row[0]}/${row[3]}" class="btn btn-sm copy ${row[5]==''?'green-jungle':''}" data-clipboard-text="${copyText}">调用代码</button>`;
+            
+            row.push(btnEdit + btnDel +  btnCopy);
+            
+            row[4] = {
+                data:row[4],
+                class:"break"
+            }
+            
             return row;
         });
         initDatatable(res);
@@ -227,6 +284,18 @@ let initDatatable = res => {
     table = $('.result-content .table').dataTable({
         language,
         destroy: true,
+        "columnDefs": [
+            {
+                "targets": [ 5 ],
+                "visible": false,
+                "searchable": false
+            },
+            {
+                "targets": [ 3 ],
+                "visible": false
+            }
+        ],
+        "autoWidth": false,
         "lengthMenu": [
             [5, 10, 15, 20, 50, 100, -1],
             [5, 10, 15, 20, 50, 100, "所有"] // change per page values here
@@ -243,11 +312,16 @@ let initDatatable = res => {
         "initComplete": function(settings) {
             var api = this.api();
             api.on("click", 'tbody td', function() {
+                const text = $(this).text().toLowerCase();
+                if(text.includes('select') || text.includes('.json')){
+                    return;
+                }
                 if ($(this).find('button').length == 0) {
                     api.search(this.innerText.trim()).draw();
                 }
             });
             initDelBtn();
+            initCopyBtn();
             initStatus = true;
         }
     });
