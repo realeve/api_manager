@@ -9,7 +9,7 @@ import tableApp from '../common/renderTable';
 import beautify from 'js-beautify'
 const Clipboard = require('clipboard');
 
-
+let select2InitFlag = false;
 let getDBName = async() => {
     await select2.renderWithUrl('db_id', '2/6119bacd08.json');
 }
@@ -95,6 +95,7 @@ let initEvent = () => {
     $('#reset-tag').on('click', () => {
         $('[name="param"]').tagsinput('removeAll');
     })
+    
     let option =  {
         lineNumbers: true,
         styleActiveLine: true,
@@ -109,11 +110,13 @@ let initEvent = () => {
 
 let resetNewModal = () => {
     $('#addapi input,#addapi textarea').val('');
-    select2.value('db_id', '2');
     $('#api-saved').text('添加');
     $('#addapi .modal-title').text('新增接口');
     $('[name="param"]').tagsinput('removeAll');
     $('[name="param"]').tagsinput('add', 'tstart,tend');
+    if(select2InitFlag){
+        select2.value('db_id', '2');
+    }
 }
 
 let initEditBtn = () => {
@@ -229,27 +232,24 @@ const getAjaxDemo = row=>{
             let params = row[5].trim();
             
             let text = `{
-                headers,
-                baseURL,
                 url:'${url}'
             }`
             if(params.length){
                 text = `{
-                    headers,
-                    baseURL,
                     url:'${url}',
                     params:{${params.split(',').map(str=>`${str}:'${str}'`).join(',\n')}},
                 }`;
             }
-            const copyText = `
-                // headers及baseURL在axios实例初始化时指定
-                const headers = {
-                    Authorization:'${window.apps.token}'
-                };
-                const baseURL = '${window.apps.host}';
+            
+            // headers及baseURL在axios实例初始化时指定
+            // const headers = {
+            //     Authorization:'${window.apps.token}'
+            // };
+            // const baseURL = '${window.apps.host}';
 
+            const copyText = `
                 const data = await axios(${text}).then(res=>res.data);
-                console.log(data);
+                
             `;
             return beautify(copyText, { indent_size: 2, wrap_line_length: 80, jslint_happy: true });
 }
@@ -358,6 +358,8 @@ let init = async() => {
     refreshData();
     await getDBName();
     select2.init();
+    select2InitFlag = true;
+    $('.bootstrap-tagsinput').css('width','85%');
 }
 export default {
     init
