@@ -39,17 +39,17 @@ export let axios = async option => {
         transformRequest: [function(data) {
             return qs.stringify(data)
         }]
-    })(option).then(res => {
+    })(option).then(({data} )=> {
         // 刷新token
-        if (typeof res.data.token != 'undefined') {
-            apps.token = res.data.token;
+        if (typeof data.token != 'undefined') {
+            apps.token = data.token;
         }
-        return res.data;
-    }).catch(res => {
-        let req = res.response.request;
+        return data;
+    }).catch(({response}) => {
+        let req = response.request;
         let errMsg = `${req.status} ${req.statusText}<br>数据读取失败<br>错误原因：${res.response.data.errmsg}`
         lib.tip(errMsg, 1, 0);
-        let data = res.response.data;
+        let data = response.data;
         data.status = req.status;
         data.statusText = req.statusText;
         return Promise.reject(data);

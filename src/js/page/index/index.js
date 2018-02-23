@@ -6,12 +6,14 @@ import select2 from './select2/select2';
 import language from './datatable';
 
 import tableApp from '../common/renderTable';
+import beautify from 'js-beautify'
 const Clipboard = require('clipboard');
+
 
 let getDBName = async() => {
     await select2.renderWithUrl('db_id', '2/6119bacd08.json');
 }
-
+let editor,resultEditor;
 let addType = {
     NEW: 0,
     EDIT: 1
@@ -93,6 +95,16 @@ let initEvent = () => {
     $('#reset-tag').on('click', () => {
         $('[name="param"]').tagsinput('removeAll');
     })
+    let option =  {
+        lineNumbers: true,
+        styleActiveLine: true,
+        matchBrackets: true,
+        theme:'material'
+    };
+    editor = CodeMirror.fromTextArea($("#codeContent")[0],option);
+    resultEditor = CodeMirror.fromTextArea($("#result")[0],option);
+    editor.setSize('100%', '340px');
+    resultEditor.setSize('100%', '340px');
 }
 
 let resetNewModal = () => {
@@ -139,6 +151,7 @@ let initCopyBtn = ()=>{
     });
     
     $('tbody').on('click', '[name="preview"]', function() {
+        App.scrollTop();
         let url = $(this).data('url') + '&cache=5';
         let surl = $(this).data('surl');
         const urls = [apps.host+url,
@@ -148,15 +161,24 @@ let initCopyBtn = ()=>{
             apps.host+surl+'/array.json',
             apps.host+surl+'/json.json'
         ]
-        lib.alert({ text: "调用：" + urls.join('<br>或 ') });
+        $('#codeurl').html(urls.join('<br>'));
+
+        const code = $(this).data('clipboard-text');
+        let beautyOption = { indent_size: 2, wrap_line_length: 80, jslint_happy: true };
+        const codeStr = beautify(code, beautyOption);
+        
+        editor.setValue(codeStr);  
+
         if($(this).data('params').trim().length){
+            const resultStr = beautify(JSON.stringify({
+                msg:'该接口中含有额外请求参数，请自行配置参数预览数据'
+            }), beautyOption);
+            resultEditor.setValue(resultStr);  
             return;
         }
         axios({ url }).then(data => {
-            lib.alert({
-                text: '返回结果:<br><br>' + JSON.stringify(data), //.replace(/,/g, ',<br>').replace(/{/g, '{<br>').replace(/}/g, '<br>}').replace(/\[/g, '<br>[')
-                type: 1
-            })
+            const resultStr = beautify(JSON.stringify(data), beautyOption);
+            resultEditor.setValue(resultStr);  
         })
     })
 }
@@ -202,6 +224,36 @@ let deleteAPI = (id, nonce) => {
     })
 }
 
+const getAjaxDemo = row=>{
+     const url = `/${row[0]}/${row[3]}.json`;
+            let params = row[5].trim();
+            
+            let text = `{
+                headers,
+                baseURL,
+                url:'${url}'
+            }`
+            if(params.length){
+                text = `{
+                    headers,
+                    baseURL,
+                    url:'${url}',
+                    params:{${params.split(',').map(str=>`${str}:'${str}'`).join(',\n')}},
+                }`;
+            }
+            const copyText = `
+                // headers及baseURL在axios实例初始化时指定
+                const headers = {
+                    Authorization:'${window.apps.token}'
+                };
+                const baseURL = '${window.apps.host}';
+
+                const data = await axios(${text}).then(res=>res.data);
+                console.log(data);
+            `;
+            return beautify(copyText, { indent_size: 2, wrap_line_length: 80, jslint_happy: true });
+}
+
 let refreshData = () => {
     var option = {
         url:'1/e61799e7ab/array.json',
@@ -222,33 +274,7 @@ let refreshData = () => {
         exportConfig.body = res.data.map((row, i) => [i + 1, ...row]);
 
         res.data = res.data.map((row, i) => {
-
-            const url = `/${row[0]}/${row[3]}.json`;
-            let params = '';
-            if(row[5].trim().length){
-                params = `{
-                    ${row[5]}
-                }`
-            };
-            
-            let text = `{
-                headers:{
-                    Authorization:'${window.apps.token}'
-                },
-                baseURL:'${window.apps.host}',
-                url:'${url}'
-            }`
-            if(params.length){
-                text = `{
-                    headers:{
-                        Authorization:'${window.apps.token}'
-                    },
-                    baseURL:'${window.apps.host}',
-                    url:'${url}',
-                    params:{${row[5]}},
-                }`;
-            }
-            const copyText = `axios(${text}).then(({data})=>{console.log(data)})`;
+            const copyText = getAjaxDemo(row);           
             let btnDel = `<button type="button" name="del" data-toggle="confirmation" data-original-title="确认删除本接口?" data-singleton="true" data-btn-ok-label="是" data-btn-cancel-label="否" data-id="${row[0]}" data-nonce="${row[3]}" class="btn red-haze btn-sm">删除</button>`;
             let btnEdit = `<button type="button" name="edit" data-id="${row[0]}" class="btn blue-steel btn-sm">编辑</button>`;
             let btnCopy = `<button type="button" name="preview" data-params="${row[5]}" data-url="?id=${row[0]}&nonce=${row[3]}" data-surl="${row[0]}/${row[3]}" class="btn btn-sm copy ${row[5]==''?'green-jungle':''}" data-clipboard-text="${copyText}">调用代码</button>`;

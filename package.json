@@ -33,7 +33,9 @@
     "gulp-util": "^3.0.7",
     "gulp-webserver": "^0.9.1",
     "imagemin-pngquant": "^5.0.1",
+    "js-beautify": "^1.7.5",
     "lodash": "^4.17.4",
+    "prettier": "^1.10.2",
     "qs": "^6.5.1",
     "run-sequence": "^2.2.0"
   },
