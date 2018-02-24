@@ -7,6 +7,8 @@ import language from './datatable';
 
 import tableApp from '../common/renderTable';
 import beautify from 'js-beautify'
+import sqlConverter from './sqlConverter';
+
 const Clipboard = require('clipboard');
 
 let select2InitFlag = false;
@@ -359,10 +361,28 @@ let initDatatable = res => {
     });
 }
 
+const initAddPanel = ()=>{
+    $('[name="api-parse"]').on('click',function(){
+        let $dom = $(this);
+        let mode = $dom.data('mode');
+        let sqlstr = $('#addapi [name="sqlstr"]').val();
+        if(!sqlConverter.validateStr(sqlstr)){
+            return;
+        }
+        const sqlSetting = sqlConverter[mode](sqlstr);
+        // 自动添加参数
+        $('[name="param"]').tagsinput('removeAll');
+        $('[name="param"]').tagsinput('add', sqlSetting.params.join(','));
+        $('#addapi [name="sqlstr"]').val(sqlSetting.sql);
+        
+    })
+}
+
 let init = async() => {
     initEvent();
     refreshData();
     await getDBName();
+    initAddPanel();
     select2.init();
     select2InitFlag = true;
     $('.bootstrap-tagsinput').css('width','85%');
