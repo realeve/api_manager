@@ -10,6 +10,7 @@ import beautify from 'js-beautify'
 const Clipboard = require('clipboard');
 
 let select2InitFlag = false;
+let previewInitFlag = false;
 let getDBName = async() => {
     await select2.renderWithUrl('db_id', '2/6119bacd08.json');
 }
@@ -153,10 +154,14 @@ let initCopyBtn = ()=>{
     clipboard.on('success', function(e) {
         lib.tip('调用代码已复制至剪贴板。');
     });
+    if(previewInitFlag){
+        return;
+    }
+    previewInitFlag = true;
     
     $('tbody').on('click', '[name="preview"]', function() {
         App.scrollTop();
-        let url = $(this).data('url') + '&cache=5';
+        let url = $(this).data('url') + '&cache=0';
         let surl = $(this).data('surl');
         const urls = [apps.host+url,
             apps.host+surl+'.json?cache=5',
