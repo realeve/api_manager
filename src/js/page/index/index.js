@@ -256,6 +256,10 @@ const getAjaxDemo = row=>{
             // const baseURL = '${window.apps.host}';
 
             const copyText = `
+                \/**
+                 * @database: { ${row[1]} }
+                 * @desc:     { ${row[2]} }
+                 *\/
                 const data = await axios(${text}).then(res=>res.data);
                 
             `;
