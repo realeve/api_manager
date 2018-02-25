@@ -37,6 +37,7 @@
     "lodash": "^4.17.4",
     "prettier": "^1.10.2",
     "qs": "^6.5.1",
+    "ramda": "^0.25.0",
     "run-sequence": "^2.2.0"
   },
   "licenses": "BSD",

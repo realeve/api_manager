@@ -1,13 +1,11 @@
 import data2file from '../common/exportTable';
 import lib from '../common/lib';
 import { axios } from '../common/axios';
-
 import select2 from './select2/select2';
 import language from './datatable';
-
 import tableApp from '../common/renderTable';
 import beautify from 'js-beautify'
-import sqlConverter from './sqlConverter';
+import sqlFormatter from './sqlFormatter';
 
 const Clipboard = require('clipboard');
 
@@ -46,6 +44,7 @@ let addApi = async() => {
         sqlstr: $('#addapi [name="sqlstr"]').val(),
         param: $('#addapi [name="param"]').val(),
         tbl: 'sys_api',
+        remark:$('#addapi [name="remark"]').val(),
         uid: apps.userInfo.uid
     }
     data.sqlstr = data.sqlstr.replace(/'/g,"\\'");
@@ -78,6 +77,7 @@ let addApi = async() => {
         refreshData();
         lib.tip('数据成功' + (curType ? '修改' : '添加'));
     })
+    $('[name="remark"]').val('');
 }
 
 let initEvent = () => {
@@ -254,12 +254,15 @@ const getAjaxDemo = row=>{
             //     Authorization:'${window.apps.token}'
             // };
             // const baseURL = '${window.apps.host}';
-
+            let remark = '';
+            if(row[9].trim().length){
+                remark = '\r\n\t以下参数在建立过程中与系统保留字段冲突，已自动替换:\r\n\t'+(row[9].split('<br>').join('\r\n\t'));
+            }
             const copyText = `
-                \/**
-                 * @database: { ${row[1]} }
-                 * @desc:     { ${row[2]} }
-                 *\/
+\/**
+*   @database: { ${row[1]} }
+*   @desc:     { ${row[2]} } ${remark}
+*\/
                 const data = await axios(${text}).then(res=>res.data);
                 
             `;
@@ -331,6 +334,10 @@ let initDatatable = res => {
             {
                 "targets": [ 3 ],
                 "visible": false
+            },
+            {
+                "targets": [ 9 ],
+                "visible": false
             }
         ],
         "autoWidth": false,
@@ -370,15 +377,15 @@ const initAddPanel = ()=>{
         let $dom = $(this);
         let mode = $dom.data('mode');
         let sqlstr = $('#addapi [name="sqlstr"]').val();
-        if(!sqlConverter.validateStr(sqlstr)){
+        if(!sqlFormatter.validateStr(sqlstr)){
             return;
         }
-        const sqlSetting = sqlConverter[mode](sqlstr);
+        const sqlSetting = sqlFormatter[mode](sqlstr);
         // 自动添加参数
         $('[name="param"]').tagsinput('removeAll');
         $('[name="param"]').tagsinput('add', sqlSetting.params.join(','));
         $('#addapi [name="sqlstr"]').val(sqlSetting.sql);
-        
+        $('[name="remark"]').val(sqlSetting.remarkList.join('<br>'));
     })
 }
 
