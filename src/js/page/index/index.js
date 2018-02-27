@@ -244,11 +244,18 @@ const getAjaxDemo = row=>{
                 url:'${url}'
             }`
             let queryParam  = params.split(',').map(str=>`${str}:'${str}'`).join(',\n');
-
+            let isPatchInsert = row[4].includes('insert ') && row[5].includes('values')
             // 批量插入时对参数需做特殊处理
-            if(row[4].includes('insert ') && row[5].includes('values')){
+            let preCode=''
+            if(isPatchInsert){
                 let item = row[9].match(/\[\[(\S+)/g)[0].substr(2);
-                queryParam = `values:[[${item}]]`;
+                queryParam = `values`;
+                preCode= `
+                // formData 为待插入的数据
+                let values = formData.map(
+                    ({ ${item} }) => [${item}]
+                );
+                `
             }
 
             if(params.length){
@@ -271,7 +278,7 @@ const getAjaxDemo = row=>{
 \/**
 *   @database: { ${row[1]} }
 *   @desc:     { ${row[2]} } ${remark}
-*\/
+*\/ ${preCode}
                 const data = await axios(${text}).then(res=>res.data);
                 
             `;
