@@ -138,6 +138,7 @@ let initEditBtn = () => {
         $('#api-saved').text('更新');
         $('#addapi .modal-title').text('修改接口');
         $('#addapi').modal();
+        $('#addapi [name="remark"]').val(editingData[9]);
     })
 }
 
@@ -242,10 +243,18 @@ const getAjaxDemo = row=>{
             let text = `{
                 url:'${url}'
             }`
+            let queryParam  = params.split(',').map(str=>`${str}:'${str}'`).join(',\n');
+
+            // 批量插入时对参数需做特殊处理
+            if(row[4].includes('insert ') && row[5].includes('values')){
+                let item = row[9].match(/\[\[(\S+)/g)[0].substr(2);
+                queryParam = `values:[[${item}]]`;
+            }
+
             if(params.length){
                 text = `{
                     url:'${url}',
-                    params:{${params.split(',').map(str=>`${str}:'${str}'`).join(',\n')}},
+                    params:{${queryParam}},
                 }`;
             }
             
