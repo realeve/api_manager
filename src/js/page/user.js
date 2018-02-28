@@ -20,7 +20,7 @@ let initEvent = () => {
         }
     }, 500));
 
-    $('[name="psw"]').on('change', function() {
+    $('[name="psw"]').on('change', function () {
         let val = $(this).val();
         if (val.length < 6) {
             lib.tip('密码最少长度为6位');
@@ -29,7 +29,7 @@ let initEvent = () => {
         }
     })
 
-    saveBtn.on('click', function() {
+    saveBtn.on('click', function () {
         let data = {
             fullname: $('[name="fullname"]').val(),
             psw: $('[name="psw"]').val(),
@@ -54,6 +54,6 @@ let initEvent = () => {
 let init = () => {
     initEvent();
 }
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
     init();
 });

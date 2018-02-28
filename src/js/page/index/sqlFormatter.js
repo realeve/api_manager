@@ -22,9 +22,9 @@ const validParam = _param => {
 		}, {
 			name: 'mode',
 			desc: '数据返回模式，array|object两种，默认array传输更少的数据。'
-		// }, {
-		// 	name: 'values',
-		// 	desc: '数据批量插入时所用的参数，格式为[object,object],objtct表示需要插入的每一项数据。'
+			// }, {
+			// 	name: 'values',
+			// 	desc: '数据批量插入时所用的参数，格式为[object,object],objtct表示需要插入的每一项数据。'
 		}];
 	let msg = R.filter(R.propEq('name', param), systemVariants)
 	if (msg.length) {
@@ -130,13 +130,13 @@ const insert = str => {
 	}
 }
 
-const insertPatch = str=>{
+const insertPatch = str => {
 	let sql = preHandler(str);
 	let values = sql.columns.map(item => '?').join(',');
 	return {
 		sql: `insert into ${sql.tableName}(${sql.columns.join(',')}) values ?`.replace(/  /g, ' '),
 		params: ['values'],
-		columns:sql.columns,
+		columns: sql.columns,
 		remarkList: [`@desc:批量插入数据时，约定使用二维数组values参数，格式为[[${sql.columns.join(',')}]]，数组的每一项表示一条数据`]
 	}
 }

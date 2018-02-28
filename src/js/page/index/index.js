@@ -11,10 +11,10 @@ const Clipboard = require('clipboard');
 
 let select2InitFlag = false;
 let previewInitFlag = false;
-let getDBName = async() => {
+let getDBName = async () => {
     await select2.renderWithUrl('db_id', '2/6119bacd08.json');
 }
-let editor,resultEditor;
+let editor, resultEditor;
 let addType = {
     NEW: 0,
     EDIT: 1
@@ -36,7 +36,7 @@ let exportConfig = {
 
 let initStatus = false;
 
-let addApi = async() => {
+let addApi = async () => {
     // 此处需将空字符，全角问号等全部替换
     let data = {
         api_name: $('#addapi [name="api_name"]').val(),
@@ -44,10 +44,10 @@ let addApi = async() => {
         sqlstr: $('#addapi [name="sqlstr"]').val(),
         param: $('#addapi [name="param"]').val(),
         tbl: 'sys_api',
-        remark:$('#addapi [name="remark"]').val(),
+        remark: $('#addapi [name="remark"]').val(),
         uid: apps.userInfo.uid
     }
-    data.sqlstr = data.sqlstr.replace(/'/g,"\\'");
+    data.sqlstr = data.sqlstr.replace(/'/g, "\\'");
     // if(data.sqlstr.includes("'")){
     //     lib.tip('查询语句中包含单引号，服务端在数据组装时将报错，请用视图等方式解决该问题。')
     //     return;
@@ -55,7 +55,7 @@ let addApi = async() => {
 
     // 去除无效字符
     data.sqlstr = data.sqlstr.replace(/\s/g, ' ').replace(/  /g, ' ').replace(/？/g, '?').replace(/, /g, ',').replace(/`/g, '').trim();
-    
+
     // 去除param中数字部分，禁止1=1此类问题出现
     if (data.param != '') {
         let paramData = data.param.split(',');
@@ -99,15 +99,15 @@ let initEvent = () => {
     $('#reset-tag').on('click', () => {
         $('[name="param"]').tagsinput('removeAll');
     })
-    
-    let option =  {
+
+    let option = {
         lineNumbers: true,
         styleActiveLine: true,
         matchBrackets: true,
-        theme:'material'
+        theme: 'material'
     };
-    editor = CodeMirror.fromTextArea($("#codeContent")[0],option);
-    resultEditor = CodeMirror.fromTextArea($("#result")[0],option);
+    editor = CodeMirror.fromTextArea($("#codeContent")[0], option);
+    resultEditor = CodeMirror.fromTextArea($("#result")[0], option);
     editor.setSize('100%', '340px');
     resultEditor.setSize('100%', '340px');
 }
@@ -118,13 +118,13 @@ let resetNewModal = () => {
     $('#addapi .modal-title').text('新增接口');
     $('[name="param"]').tagsinput('removeAll');
     $('[name="param"]').tagsinput('add', 'tstart,tend');
-    if(select2InitFlag){
+    if (select2InitFlag) {
         select2.value('db_id', '2');
     }
 }
 
 let initEditBtn = () => {
-    $('tbody').on('click', 'button[name="edit"]', function() {
+    $('tbody').on('click', 'button[name="edit"]', function () {
         let id = $(this).data('id');
         curType = addType.EDIT;
         editingData = tblData.filter(item => item[0] == id)[0];
@@ -143,7 +143,7 @@ let initEditBtn = () => {
 }
 
 let initDelBtn = () => {
-    $('tbody').on('confirmed.bs.confirmation', 'button[name="del"]', function() {
+    $('tbody').on('confirmed.bs.confirmation', 'button[name="del"]', function () {
         let id = $(this).data('id');
         // deleteDataFromIdx(id);
         // $(this).parents('tr').remove();
@@ -151,46 +151,46 @@ let initDelBtn = () => {
     });
 }
 
-let initCopyBtn = ()=>{
+let initCopyBtn = () => {
     var btns = document.querySelectorAll('.copy');
     var clipboard = new Clipboard(btns);
-    clipboard.on('success', function(e) {
+    clipboard.on('success', function (e) {
         lib.tip('调用代码已复制至剪贴板。');
     });
-    if(previewInitFlag){
+    if (previewInitFlag) {
         return;
     }
     previewInitFlag = true;
-    
-    $('tbody').on('click', '[name="preview"]', function() {
+
+    $('tbody').on('click', '[name="preview"]', function () {
         App.scrollTop();
         let url = $(this).data('url') + '&cache=0';
         let surl = $(this).data('surl');
-        const urls = [apps.host+url,
-            apps.host+surl+'.json?cache=5',
-            apps.host+surl+'.html',
-            apps.host+surl+'.html?mode=array',
-            apps.host+surl+'/array.json',
-            apps.host+surl+'/json.json'
+        const urls = [apps.host + url,
+        apps.host + surl + '.json?cache=5',
+        apps.host + surl + '.html',
+        apps.host + surl + '.html?mode=array',
+        apps.host + surl + '/array.json',
+        apps.host + surl + '/json.json'
         ]
         $('#codeurl').html(urls.join('<br>'));
 
         const code = $(this).data('clipboard-text');
         let beautyOption = { indent_size: 2, wrap_line_length: 80, jslint_happy: true };
         const codeStr = beautify(code, beautyOption);
-        
-        editor.setValue(codeStr);  
 
-        if($(this).data('params').trim().length){
+        editor.setValue(codeStr);
+
+        if ($(this).data('params').trim().length) {
             const resultStr = beautify(JSON.stringify({
-                msg:'该接口中含有额外请求参数，请自行配置参数预览数据'
+                msg: '该接口中含有额外请求参数，请自行配置参数预览数据'
             }), beautyOption);
-            resultEditor.setValue(resultStr);  
+            resultEditor.setValue(resultStr);
             return;
         }
         axios({ url }).then(data => {
             const resultStr = beautify(JSON.stringify(data), beautyOption);
-            resultEditor.setValue(resultStr);  
+            resultEditor.setValue(resultStr);
         })
     })
 }
@@ -236,58 +236,86 @@ let deleteAPI = (id, nonce) => {
     })
 }
 
-const getAjaxDemo = row=>{
-     const url = `/${row[0]}/${row[3]}.json`;
-            let params = row[5].trim();
-            
-            let text = `{
+let getFunName = sql => {
+    let DATA_MODE = sql.split(' ')[0].toLowerCase();
+    let tableName = '', prefix = '';
+    switch (DATA_MODE) {
+        case 'select':
+            prefix = 'readFrom';
+            break;
+        case 'insert':
+            prefix = 'addInto';
+            break;
+        case 'update':
+            prefix = 'upateTbl';
+            break;
+        case 'delete':
+            prefix = 'deleteFrom';
+            break;
+    }
+}
+
+const getAjaxDemo = row => {
+    const url = `/${row[0]}/${row[3]}.json`;
+    let params = row[5].trim();
+
+    let text = `{
                 url:'${url}'
             }`
-            let queryParam  = params.split(',').map(str=>`${str}:'${str}'`).join(',\n');
-            let isPatchInsert = row[4].includes('insert ') && row[5].includes('values')
-            // 批量插入时对参数需做特殊处理
-            let preCode=''
-            if(isPatchInsert){
-                let item = row[9].match(/\[\[(\S+)/g)[0].substr(2);
-                queryParam = `values`;
-                preCode= `
-                // formData 为待插入的数据
+    let queryParam = params.split(',').map(str => `${str}:'${str}'`).join(',\n');
+    let isPatchInsert = row[4].includes('insert ') && row[5].includes('values')
+    // 批量插入时对参数需做特殊处理
+    let preCode = ''
+
+    if (isPatchInsert) {
+        let item = row[9].match(/\[\[(\S+)/g)[0].substr(2);
+        queryParam = `values`;
+        preCode = `
+                // 将待插入的数据[{key:value},{key,value}]转换为[value,value]
                 let values = formData.map(
                     ({ ${item} }) => [${item}]
                 );
                 `
-            }
+    }
 
-            if(params.length){
-                text = `{
+    if (params.length) {
+        text = `{
                     url:'${url}',
                     params:{${queryParam}},
                 }`;
-            }
-            
-            // headers及baseURL在axios实例初始化时指定
-            // const headers = {
-            //     Authorization:'${window.apps.token}'
-            // };
-            // const baseURL = '${window.apps.host}';
-            let remark = '';
-            if(row[9].trim().length){
-                remark = '\r\n\t以下参数在建立过程中与系统保留字段冲突，已自动替换:\r\n\t'+(row[9].split('<br>').join('\r\n\t'));
-            }
-            const copyText = `
+    }
+
+    let paramCode = `{${params}}`;
+    if (!params.includes(',')) {
+        paramCode = isPatchInsert ? 'formData' : params;
+    }
+
+    // headers及baseURL在axios实例初始化时指定
+    // const headers = {
+    //     Authorization:'${window.apps.token}'
+    // };
+    // const baseURL = '${window.apps.host}';
+    let remark = '';
+    if (row[9].trim().length) {
+        remark = '\r\n\t以下参数在建立过程中与系统保留字段冲突，已自动替换:\r\n\t' + (row[9].split('<br>').join('\r\n\t'));
+    }
+    const copyText = `
 \/**
 *   @database: { ${row[1]} }
 *   @desc:     { ${row[2]} } ${remark}
-*\/ ${preCode}
-                const data = await axios(${text}).then(res=>res.data);
-                
+*\/
+async (${paramCode})=>{
+    ${preCode}
+    const data = await axios(${text}).then(res=>res.data);
+    return data;
+};
             `;
-            return beautify(copyText, { indent_size: 2, wrap_line_length: 80, jslint_happy: true });
+    return beautify(copyText, { indent_size: 2, wrap_line_length: 80, jslint_happy: true });
 }
 
 let refreshData = () => {
     var option = {
-        url:'1/e61799e7ab/array.json',
+        url: '1/e61799e7ab/array.json',
         params: {
             // id: 1,
             // mode: 'array'
@@ -298,25 +326,25 @@ let refreshData = () => {
     axios(option).then(res => {
         tblData = res.data;
         res.header[4] = {
-            data:res.header[4],
-            width:'450px'
+            data: res.header[4],
+            width: '450px'
         }
         exportConfig.header = ['#', ...res.header];
         exportConfig.body = res.data.map((row, i) => [i + 1, ...row]);
 
         res.data = res.data.map((row, i) => {
-            const copyText = getAjaxDemo(row);           
+            const copyText = getAjaxDemo(row);
             let btnDel = `<button type="button" name="del" data-toggle="confirmation" data-original-title="确认删除本接口?" data-singleton="true" data-btn-ok-label="是" data-btn-cancel-label="否" data-id="${row[0]}" data-nonce="${row[3]}" class="btn red-haze btn-sm">删除</button>`;
             let btnEdit = `<button type="button" name="edit" data-id="${row[0]}" class="btn blue-steel btn-sm">编辑</button>`;
-            let btnCopy = `<button type="button" name="preview" data-params="${row[5]}" data-url="?id=${row[0]}&nonce=${row[3]}" data-surl="${row[0]}/${row[3]}" class="btn btn-sm copy ${row[5]==''?'green-jungle':''}" data-clipboard-text="${copyText}">调用代码</button>`;
-            
-            row.push(btnEdit + btnDel +  btnCopy);
-            
+            let btnCopy = `<button type="button" name="preview" data-params="${row[5]}" data-url="?id=${row[0]}&nonce=${row[3]}" data-surl="${row[0]}/${row[3]}" class="btn btn-sm copy ${row[5] == '' ? 'green-jungle' : ''}" data-clipboard-text="${copyText}">调用代码</button>`;
+
+            row.push(btnEdit + btnDel + btnCopy);
+
             row[4] = {
-                data:row[4],
-                class:"break"
+                data: row[4],
+                class: "break"
             }
-            
+
             return row;
         });
         initDatatable(res);
@@ -343,16 +371,16 @@ let initDatatable = res => {
         destroy: true,
         "columnDefs": [
             {
-                "targets": [ 5 ],
+                "targets": [5],
                 "visible": false,
                 "searchable": false
             },
             {
-                "targets": [ 3 ],
+                "targets": [3],
                 "visible": false
             },
             {
-                "targets": [ 9 ],
+                "targets": [9],
                 "visible": false
             }
         ],
@@ -370,11 +398,11 @@ let initDatatable = res => {
         "bScrollInfinite": true,
         searchHighlight: true, //高亮
         "pageLength": 10,
-        "initComplete": function(settings) {
+        "initComplete": function (settings) {
             var api = this.api();
-            api.on("click", 'tbody td', function() {
+            api.on("click", 'tbody td', function () {
                 const text = $(this).text().toLowerCase();
-                if(text.includes('select') || text.includes('.json')){
+                if (text.includes('select') || text.includes('.json')) {
                     return;
                 }
                 if ($(this).find('button').length == 0) {
@@ -388,12 +416,12 @@ let initDatatable = res => {
     });
 }
 
-const initAddPanel = ()=>{
-    $('[name="api-parse"]').on('click',function(){
+const initAddPanel = () => {
+    $('[name="api-parse"]').on('click', function () {
         let $dom = $(this);
         let mode = $dom.data('mode');
         let sqlstr = $('#addapi [name="sqlstr"]').val();
-        if(!sqlFormatter.validateStr(sqlstr)){
+        if (!sqlFormatter.validateStr(sqlstr)) {
             return;
         }
         const sqlSetting = sqlFormatter[mode](sqlstr);
@@ -405,14 +433,14 @@ const initAddPanel = ()=>{
     })
 }
 
-let init = async() => {
+let init = async () => {
     initEvent();
     refreshData();
     await getDBName();
     initAddPanel();
     select2.init();
     select2InitFlag = true;
-    $('.bootstrap-tagsinput').css('width','85%');
+    $('.bootstrap-tagsinput').css('width', '85%');
 }
 export default {
     init

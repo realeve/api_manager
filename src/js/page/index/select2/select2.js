@@ -17,7 +17,7 @@ let init = () => {
         width: null
     });
 
-    $.fn.select2.amd.require(['select2/compat/matcher'], function(oldMatcher) {
+    $.fn.select2.amd.require(['select2/compat/matcher'], function (oldMatcher) {
         $(".select2, .select2-multiple").select2({
             matcher: oldMatcher(matchStart),
             width: null,
@@ -34,7 +34,7 @@ let reset = name => value(name, '');
 // 根据name获取select2文本内容
 let text = name => {
     let arr = [];
-    $("select[name='" + name + "']").find('option:selected').each(function() {
+    $("select[name='" + name + "']").find('option:selected').each(function () {
         arr.push(this.text);
     });
     return arr.join(',');
@@ -49,7 +49,7 @@ let render = (name, data) => {
 }
 
 // https://select2.org/data-sources/ajax
-let renderWithUrl = async(name, url) => {
+let renderWithUrl = async (name, url) => {
     let data = await axios({ url }).then(res => res.data);
     render(name, data);
 }

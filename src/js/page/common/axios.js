@@ -2,7 +2,7 @@ import http from 'axios';
 import qs from 'qs';
 import lib from './lib';
 
-let refreshNoncer = async() => {
+let refreshNoncer = async () => {
     // let refUrl = location.href.split('?')[0].split('#')[0];
     // 此时可将引用url链接作为 url 参数请求登录，作为强校验；
     // 本部分涉及用户名和密码，用户需自行在服务端用curl申请得到token，勿放置在前端; 
@@ -36,16 +36,16 @@ export let axios = async option => {
     return await http.create({
         baseURL: apps.host,
         timeout: 10000,
-        transformRequest: [function(data) {
+        transformRequest: [function (data) {
             return qs.stringify(data)
         }]
-    })(option).then(({data} )=> {
+    })(option).then(({ data }) => {
         // 刷新token
         if (typeof data.token != 'undefined') {
             apps.token = data.token;
         }
         return data;
-    }).catch(({response}) => {
+    }).catch(({ response }) => {
         let req = response.request;
         let errMsg = `${req.status} ${req.statusText}<br>数据读取失败<br>错误原因：${res.response.data.errmsg}`
         lib.tip(errMsg, 1, 0);

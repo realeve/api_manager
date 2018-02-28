@@ -30,11 +30,11 @@ let rangeStr = ['过去30天', '本月', '上月', '本季度', '上季度', '�
 
 let ranges = {};
 
-rangeStr.forEach(function(day, i) {
+rangeStr.forEach(function (day, i) {
     ranges[day] = rangeArr[i];
 });
 
-let dateRange = function(mode, yearType) {
+let dateRange = function (mode, yearType) {
     return rangeArr[mode][0].format(yearType) + ' ~ ' + rangeArr[mode][1].format(yearType);
 };
 
@@ -50,37 +50,37 @@ let init = (yearType = 'YYYYMMDD') => {
     }
 
     dateDom.daterangepicker({
-            opens: (App.isRTL() ? 'right' : 'left'),
-            startDate: rangeArr[defaultRange][0],
-            endDate: rangeArr[defaultRange][1],
-            minDate: '01/01/2000',
-            maxDate: '12/31/2099',
-            dateLimit: {
-                "months": 120
-            },
-            showDropdowns: true,
-            showWeekNumbers: true,
-            timePicker: false,
-            timePickerIncrement: 1,
-            timePicker12Hour: false,
-            ranges: ranges,
-            buttonClasses: ['btn btn-sm'],
-            applyClass: ' green',
-            cancelClass: ['btn btn-sm btn-danger'],
-            format: 'MM/DD/YYYY',
-            separator: ' to ',
-            locale: {
-                applyLabel: '确定',
-                cancelLabel: '取消',
-                fromLabel: '从',
-                toLabel: '到',
-                customRangeLabel: '时间范围选择',
-                daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
-                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                firstDay: 1
-            }
+        opens: (App.isRTL() ? 'right' : 'left'),
+        startDate: rangeArr[defaultRange][0],
+        endDate: rangeArr[defaultRange][1],
+        minDate: '01/01/2000',
+        maxDate: '12/31/2099',
+        dateLimit: {
+            "months": 120
         },
-        function(start, end) {
+        showDropdowns: true,
+        showWeekNumbers: true,
+        timePicker: false,
+        timePickerIncrement: 1,
+        timePicker12Hour: false,
+        ranges: ranges,
+        buttonClasses: ['btn btn-sm'],
+        applyClass: ' green',
+        cancelClass: ['btn btn-sm btn-danger'],
+        format: 'MM/DD/YYYY',
+        separator: ' to ',
+        locale: {
+            applyLabel: '确定',
+            cancelLabel: '取消',
+            fromLabel: '从',
+            toLabel: '到',
+            customRangeLabel: '时间范围选择',
+            daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+            firstDay: 1
+        }
+    },
+        function (start, end) {
             dateDom.find('span').html(start.format(yearType) + ' ~ ' + end.format(yearType));
         }
     );

@@ -5,7 +5,7 @@ let render = (res, dom = '.table', needEdit = true) => {
     }
 
     let header = res.header.map(item => {
-        if(typeof item === 'object'){
+        if (typeof item === 'object') {
             return `<th style="width:${item.width}">${item.data}</th>`
         }
         return `<th>${item}</th>`;
@@ -17,11 +17,11 @@ let render = (res, dom = '.table', needEdit = true) => {
 
 let renderTBody = (res, dom) => {
     let strs = res.data.map((row, i) => {
-        let trStr = row.map(item =>{
-            if(typeof item ==='object'){
+        let trStr = row.map(item => {
+            if (typeof item === 'object') {
                 return `<td class="${item.class}">${item.data}</td>`
             }
-            return  `<td>${item}</td>`
+            return `<td>${item}</td>`
         }).join('');
         return `<tr>${trStr}</tr>`;
     })

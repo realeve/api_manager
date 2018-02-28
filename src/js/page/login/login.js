@@ -1,7 +1,7 @@
 import lib from "../common/lib";
 import axios from "axios";
 
-var initEvent = function() {
+var initEvent = function () {
   $(".login-form").validate({
     errorElement: "span", //default input error message container
     errorClass: "help-block", // default input error message class
@@ -27,33 +27,33 @@ var initEvent = function() {
       }
     },
 
-    invalidHandler: function(event, validator) {
+    invalidHandler: function (event, validator) {
       //display error alert on form submit
       $(".alert-danger", $(".login-form")).show();
     },
 
-    highlight: function(element) {
+    highlight: function (element) {
       // hightlight error inputs
       $(element)
         .closest(".form-group")
         .addClass("has-error"); // set error class to the control group
     },
 
-    success: function(label) {
+    success: function (label) {
       label.closest(".form-group").removeClass("has-error");
       label.remove();
     },
 
-    errorPlacement: function(error, element) {
+    errorPlacement: function (error, element) {
       error.insertAfter(element.closest(".input-icon"));
     },
 
-    submitHandler: function(form) {
+    submitHandler: function (form) {
       login();
     }
   });
 
-  $(".login-form input").keypress(function(e) {
+  $(".login-form input").keypress(function (e) {
     if (e.which == 13) {
       if (
         $(".login-form")
@@ -66,7 +66,7 @@ var initEvent = function() {
     }
   });
 
-  $(".forget-form input").keypress(function(e) {
+  $(".forget-form input").keypress(function (e) {
     if (e.which == 13) {
       if (
         $(".forget-form")
@@ -79,12 +79,12 @@ var initEvent = function() {
     }
   });
 
-  $("#forget-password").click(function() {
+  $("#forget-password").click(function () {
     $(".login-form").hide();
     $(".forget-form").show();
   });
 
-  $("#back-btn").click(function() {
+  $("#back-btn").click(function () {
     $(".login-form").show();
     $(".forget-form").hide();
   });
@@ -128,7 +128,7 @@ let loadUserInfo = () => {
   $('[name="username"]').val(userInfo.user);
 };
 
-let init = function() {
+let init = function () {
   initEvent();
   loadUserInfo();
   // init background slide images

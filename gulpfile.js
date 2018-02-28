@@ -94,7 +94,7 @@ let watchArr = [];
 /*-------------------------------------------------------------------
   DEV TASKS
 -------------------------------------------------------------------*/
-gulp.task(bui["js"], function() {
+gulp.task(bui["js"], function () {
     gutil.log(smile + " -> " + bui["js"]);
     return (gulp
         .src([...watch.js, "!./src/js/page/*"])
@@ -105,7 +105,7 @@ gulp.task(bui["js"], function() {
         .pipe(gulp.dest(deploy.js)));
 });
 
-gulp.task(bui["babel"], function() {
+gulp.task(bui["babel"], function () {
     gutil.log(smile + " -> " + bui["js"]);
     let distDir = deploy.js + "/page/";
     return (gulp
@@ -125,7 +125,7 @@ gulp.task(bui["babel"], function() {
         .pipe(gulp.dest(distDir)));
 });
 
-gulp.task(bui["images"], function() {
+gulp.task(bui["images"], function () {
     gutil.log(smile + " -> " + bui["images"]);
     return gulp
         .src(watch.images)
@@ -141,7 +141,7 @@ gulp.task(bui["images"], function() {
         .pipe(flatten({ includeParents: [1, 1] }))
         .pipe(gulp.dest(deploy.images));
 });
-gulp.task(bui["css"], function() {
+gulp.task(bui["css"], function () {
     gutil.log(smile + " -> " + bui["css"]);
     return gulp
         .src(watch.css)
@@ -153,7 +153,7 @@ gulp.task(bui["css"], function() {
         .pipe(flatten({ includeParents: [1, 1] }))
         .pipe(gulp.dest(deploy.css));
 });
-gulp.task(bui["less"], function() {
+gulp.task(bui["less"], function () {
     gutil.log(smile + " -> " + bui["less"]);
     return gulp
         .src(watch.less)
@@ -165,7 +165,7 @@ gulp.task(bui["less"], function() {
         .pipe(flatten({ includeParents: [1, 1] }))
         .pipe(gulp.dest(deploy.css + "/page/"));
 });
-gulp.task(bui["fonts"], function() {
+gulp.task(bui["fonts"], function () {
     gutil.log(smile + " -> " + bui["fonts"]);
     return gulp
         .src(watch.fonts)
@@ -175,7 +175,7 @@ gulp.task(bui["fonts"], function() {
         .pipe(gulp.dest(deploy.fonts));
 });
 
-gulp.task(bui["fonts2"], function() {
+gulp.task(bui["fonts2"], function () {
     gutil.log(smile + " -> " + bui["fonts2"]);
     return gulp
         .src(watch.fonts2)
@@ -185,7 +185,7 @@ gulp.task(bui["fonts2"], function() {
         .pipe(gulp.dest(deploy.fonts + "/fonts"));
 });
 
-gulp.task(bui["html"], function() {
+gulp.task(bui["html"], function () {
     gutil.log(smile + " -> " + bui["html"]);
     return gulp
         .src(watch.page)
@@ -218,7 +218,7 @@ gulp.task(bui["json"], () => {
         .pipe(gulp.dest(deploy.json));
 });
 
-gulp.task(bui["watch"], function() {
+gulp.task(bui["watch"], function () {
     gutil.log(smile + " -> " + bui["watch"]);
     for (let i in watch) {
         watchArr.push(watch[i]);
@@ -228,7 +228,7 @@ gulp.task(bui["watch"], function() {
     runSequence(watchBuiArr);
     gulp.watch(watchArr, watchBuiArr);
 });
-gulp.task(bui["webserver"], function() {
+gulp.task(bui["webserver"], function () {
     gutil.log(smile + " -> " + bui["webserver"]);
     gulp.src("./").pipe(
         webserver({
@@ -239,6 +239,6 @@ gulp.task(bui["webserver"], function() {
         })
     );
 });
-gulp.task("default", function(callback) {
+gulp.task("default", function (callback) {
     runSequence(bui["webserver"], bui["watch"], callback);
 });

@@ -18,9 +18,9 @@ let init = () => {
     refreshData();
 }
 
-let refreshData = async() => {
+let refreshData = async () => {
     return await axios({
-        url:'3/e4e497e849/array.json',
+        url: '3/e4e497e849/array.json',
         params: {
             // id: 3,
             // nonce: 'e4e497e849',
@@ -57,7 +57,7 @@ let initEvent = () => {
 }
 
 let initDelBtn = () => {
-    $('tbody').on('confirmed.bs.confirmation', 'button[name="del"]', function() {
+    $('tbody').on('confirmed.bs.confirmation', 'button[name="del"]', function () {
         let id = $(this).data('id');
         deleteDB(id);
     });
@@ -65,7 +65,7 @@ let initDelBtn = () => {
 
 
 let initEditBtn = () => {
-    $('tbody').on('click', 'button[name="edit"]', function() {
+    $('tbody').on('click', 'button[name="edit"]', function () {
         let id = $(this).data('id');
         curType = addType.EDIT;
         editingData = tblData.filter(item => item[0] == id)[0];
@@ -80,7 +80,7 @@ let initEditBtn = () => {
 let getDBTips = () => {
     let curIdx = tblData.length;
     let dataOutStr = tblData.map((item, i) => {
-        return `'${item[2]}'=>$db${i+1}`
+        return `'${item[2]}'=>$db${i + 1}`
     })
     return `
     请在服务端  /application/api/database.php 文件中增加以下信息用于数据库默认配置：<br><br>
@@ -107,7 +107,7 @@ let resetNewModal = () => {
     $('#addapi .modal-title').text('新增数据库');
 }
 
-let addDB = async() => {
+let addDB = async () => {
     // 此处需将空字符，全角问号等全部替换
     let data = {
         db_name: $('#addapi [name="db_name"]').val(),

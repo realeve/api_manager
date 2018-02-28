@@ -5,7 +5,7 @@
 /*jslint bitwise: true, indent: 4, laxbreak: true, laxcomma: true, smarttabs: true, plusplus: true */
 import lib from './lib';
 
-var _saveAs = (function(view) {
+var _saveAs = (function (view) {
     // IE <10 is explicitly unsupported
     if (typeof navigator !== "undefined" && /MSIE [1-9]\./.test(navigator.userAgent)) {
         return;
@@ -14,12 +14,12 @@ var _saveAs = (function(view) {
         doc = view.document
         // only get URL when necessary in case Blob.js hasn't overridden it yet
         ,
-        get_URL = function() {
+        get_URL = function () {
             return view.URL || view.webkitURL || view;
         },
         save_link = doc.createElementNS("http://www.w3.org/1999/xhtml", "a"),
         can_use_save_link = "download" in save_link,
-        click = function(node) {
+        click = function (node) {
             var event = doc.createEvent("MouseEvents");
             event.initMouseEvent(
                 "click", true, false, view, 0, 0, 0, 0, 0, false, false, false, false, 0, null
@@ -28,8 +28,8 @@ var _saveAs = (function(view) {
         },
         webkit_req_fs = view.webkitRequestFileSystem,
         req_fs = view.requestFileSystem || webkit_req_fs || view.mozRequestFileSystem,
-        throw_outside = function(ex) {
-            (view.setImmediate || view.setTimeout)(function() {
+        throw_outside = function (ex) {
+            (view.setImmediate || view.setTimeout)(function () {
                 throw ex;
             }, 0);
         },
@@ -41,8 +41,8 @@ var _saveAs = (function(view) {
         ,
         arbitrary_revoke_timeout = 500 // in ms
         ,
-        revoke = function(file) {
-            var revoker = function() {
+        revoke = function (file) {
+            var revoker = function () {
                 if (typeof file === "string") { // file is an object URL
                     get_URL().revokeObjectURL(file);
                 } else { // file is a File
@@ -55,7 +55,7 @@ var _saveAs = (function(view) {
                 setTimeout(revoker, arbitrary_revoke_timeout);
             }
         },
-        dispatch = function(filesaver, event_types, event) {
+        dispatch = function (filesaver, event_types, event) {
             event_types = [].concat(event_types);
             var i = event_types.length;
             while (i--) {
@@ -69,26 +69,26 @@ var _saveAs = (function(view) {
                 }
             }
         },
-        auto_bom = function(blob) {
+        auto_bom = function (blob) {
             // prepend BOM for UTF-8 XML and text/* types (including HTML)
             if (/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(blob.type)) {
                 return new Blob(["\ufeff", blob], { type: blob.type });
             }
             return blob;
         },
-        FileSaver = function(blob, name) {
+        FileSaver = function (blob, name) {
             blob = auto_bom(blob);
             // First try a.download, then web filesystem, then object URLs
             var
                 filesaver = this,
                 type = blob.type,
                 blob_changed = false,
-                object_url, target_view, dispatch_all = function() {
+                object_url, target_view, dispatch_all = function () {
                     dispatch(filesaver, "writestart progress write writeend".split(" "));
                 }
                 // on any filesys errors revert to saving with object URLs
                 ,
-                fs_error = function() {
+                fs_error = function () {
                     // don't create more object URLs than needed
                     if (blob_changed || !object_url) {
                         object_url = get_URL().createObjectURL(blob);
@@ -106,8 +106,8 @@ var _saveAs = (function(view) {
                     dispatch_all();
                     revoke(object_url);
                 },
-                abortable = function(func) {
-                    return function() {
+                abortable = function (func) {
+                    return function () {
                         if (filesaver.readyState !== filesaver.DONE) {
                             return func.apply(this, arguments);
                         }
@@ -153,28 +153,28 @@ var _saveAs = (function(view) {
                 return;
             }
             fs_min_size += blob.size;
-            req_fs(view.TEMPORARY, fs_min_size, abortable(function(fs) {
-                fs.root.getDirectory("saved", create_if_not_found, abortable(function(dir) {
-                    var save = function() {
-                        dir.getFile(name, create_if_not_found, abortable(function(file) {
-                            file.createWriter(abortable(function(writer) {
-                                writer.onwriteend = function(event) {
+            req_fs(view.TEMPORARY, fs_min_size, abortable(function (fs) {
+                fs.root.getDirectory("saved", create_if_not_found, abortable(function (dir) {
+                    var save = function () {
+                        dir.getFile(name, create_if_not_found, abortable(function (file) {
+                            file.createWriter(abortable(function (writer) {
+                                writer.onwriteend = function (event) {
                                     target_view.location.href = file.toURL();
                                     filesaver.readyState = filesaver.DONE;
                                     dispatch(filesaver, "writeend", event);
                                     revoke(file);
                                 };
-                                writer.onerror = function() {
+                                writer.onerror = function () {
                                     var error = writer.error;
                                     if (error.code !== error.ABORT_ERR) {
                                         fs_error();
                                     }
                                 };
-                                "writestart progress write abort".split(" ").forEach(function(event) {
+                                "writestart progress write abort".split(" ").forEach(function (event) {
                                     writer["on" + event] = filesaver["on" + event];
                                 });
                                 writer.write(blob);
-                                filesaver.abort = function() {
+                                filesaver.abort = function () {
                                     writer.abort();
                                     filesaver.readyState = filesaver.DONE;
                                 };
@@ -182,11 +182,11 @@ var _saveAs = (function(view) {
                             }), fs_error);
                         }), fs_error);
                     };
-                    dir.getFile(name, { create: false }, abortable(function(file) {
+                    dir.getFile(name, { create: false }, abortable(function (file) {
                         // delete file if it already exists
                         file.remove();
                         save();
-                    }), abortable(function(ex) {
+                    }), abortable(function (ex) {
                         if (ex.code === ex.NOT_FOUND_ERR) {
                             save();
                         } else {
@@ -197,17 +197,17 @@ var _saveAs = (function(view) {
             }), fs_error);
         },
         FS_proto = FileSaver.prototype,
-        saveAs = function(blob, name) {
+        saveAs = function (blob, name) {
             return new FileSaver(blob, name);
         };
     // IE 10+ (native saveAs)
     if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
-        return function(blob, name) {
+        return function (blob, name) {
             return navigator.msSaveOrOpenBlob(auto_bom(blob), name);
         };
     }
 
-    FS_proto.abort = function() {
+    FS_proto.abort = function () {
         var filesaver = this;
         filesaver.readyState = filesaver.DONE;
         dispatch(filesaver, "abort");
@@ -240,7 +240,7 @@ var _saveAs = (function(view) {
  * @param {object}  config       Button configuration
  * @param {boolean} incExtension Include the file name extension
  */
-var _filename = function(config, incExtension) {
+var _filename = function (config, incExtension) {
     // Backwards compatibility
     var filename = config.filename === '*' && config.title !== '*' && config.title !== undefined ?
         config.title :
@@ -263,7 +263,7 @@ var _filename = function(config, incExtension) {
  *
  * @param {object}  config  Button configuration
  */
-var _title = function(config) {
+var _title = function (config) {
     var title = config.title;
 
     return title.indexOf('*') !== -1 ?
@@ -277,12 +277,12 @@ var _title = function(config) {
  * @param {object}  config Button configuration
  * @return {string}        Newline character
  */
-var _newLine = function(config) {
+var _newLine = function (config) {
     return config.newline ?
         config.newline :
         navigator.userAgent.match(/Windows/) ?
-        '\r\n' :
-        '\n';
+            '\r\n' :
+            '\n';
 };
 
 /**
@@ -292,7 +292,7 @@ var _newLine = function(config) {
  *
  * @return {Boolean} `true` if Safari
  */
-var _isSafari = function() {
+var _isSafari = function () {
     return navigator.userAgent.indexOf('Safari') !== -1 &&
         navigator.userAgent.indexOf('Chrome') === -1 &&
         navigator.userAgent.indexOf('Opera') === -1;
@@ -419,7 +419,7 @@ var pdf = (config, download = true) => {
     //     });
     // }
 
-    pdf.getBuffer(function(buffer) {
+    pdf.getBuffer(function (buffer) {
         var blob = new Blob([buffer], { type: 'application/pdf' });
         if (!download && !_isSafari()) {
             let src = URL.createObjectURL(blob);
@@ -480,7 +480,7 @@ let xlsx = config => {
     config.filename = '*';
     config.extension = '.xlsx';
 
-    var addRow = function(row) {
+    var addRow = function (row) {
         var cells = [];
 
         for (var i = 0, ien = row.length; i < ien; i++) {
@@ -495,8 +495,8 @@ let xlsx = config => {
                 '<c t="inlineStr"><is><t>' + (!row[i].replace ?
                     row[i] :
                     row[i]
-                    .replace(/&(?!amp;)/g, '&amp;')
-                    .replace(/[\x00-\x1F\x7F-\x9F]/g, '')) + // remove control characters
+                        .replace(/&(?!amp;)/g, '&amp;')
+                        .replace(/[\x00-\x1F\x7F-\x9F]/g, '')) + // remove control characters
                 '</t></is></c>' // they are not valid in XML
             );
         }
