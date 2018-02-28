@@ -236,23 +236,30 @@ let deleteAPI = (id, nonce) => {
     })
 }
 
-let getFunName = sql => {
+let capitalize = str => str[0].toUpperCase() + str.substr(1, str.length);
+
+let getFucName = sql => {
     let DATA_MODE = sql.split(' ')[0].toLowerCase();
     let tableName = '', prefix = '';
     switch (DATA_MODE) {
         case 'select':
             prefix = 'readFrom';
+            tableName = sql.match(/ from(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
             break;
         case 'insert':
             prefix = 'addInto';
+            tableName = sql.match(/ into(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1].split('(')[0].trim();
             break;
         case 'update':
             prefix = 'upateTbl';
+            tableName = sql.match(/update(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
             break;
         case 'delete':
             prefix = 'deleteFrom';
+            tableName = sql.match(/ from(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
             break;
     }
+    return prefix + capitalize(tableName);
 }
 
 const getAjaxDemo = row => {
@@ -285,10 +292,13 @@ const getAjaxDemo = row => {
                 }`;
     }
 
+    // 传入参数
     let paramCode = `{${params}}`;
     if (!params.includes(',')) {
         paramCode = isPatchInsert ? 'formData' : params;
     }
+
+    let funcName = getFucName(row[4]);
 
     // headers及baseURL在axios实例初始化时指定
     // const headers = {
@@ -304,8 +314,7 @@ const getAjaxDemo = row => {
 *   @database: { ${row[1]} }
 *   @desc:     { ${row[2]} } ${remark}
 *\/
-async (${paramCode})=>{
-    ${preCode}
+let ${funcName} = async (${paramCode})=>{ ${preCode}
     const data = await axios(${text}).then(res=>res.data);
     return data;
 };
