@@ -259,7 +259,7 @@ let getFucName = sql => {
             tableName = sql.match(/ from(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
             break;
     }
-    return prefix + capitalize(tableName);
+    return prefix + capitalize(tableName).replace(/"/g, '');
 }
 
 const getAjaxDemo = row => {
