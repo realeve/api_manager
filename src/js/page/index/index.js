@@ -438,6 +438,9 @@ const initAddPanel = () => {
         $('[name="param"]').tagsinput('removeAll');
         $('[name="param"]').tagsinput('add', sqlSetting.params.join(','));
         $('#addapi [name="sqlstr"]').val(sqlSetting.sql);
+        if (typeof sqlSetting.remarkList == 'undefined') {
+            sqlSetting.remarkList = []
+        }
         $('[name="remark"]').val(sqlSetting.remarkList.join('<br>'));
     })
 }

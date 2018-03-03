@@ -40,12 +40,11 @@ const validParam = _param => {
 	}
 }
 
-const strHandler = str => str.trim().replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/\s/g, ' ');
+const strHandler = str => str.trim().replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/\s/g, ' ').replace(/  /g, ' ');
 const validateStr = str => str.toUpperCase().split('SELECT').length - 1 == 1;
 const preHandler = str => {
 	str = strHandler(str);
-	str = str.toLowerCase().replace('select ', '').split('group')[0].split('having')[0].split('order')[0].trim();
-
+	str = str.toLowerCase().replace('select ', '').split('group')[0].split('having')[0].split('order by')[0].trim();
 	let sql = str.split('from ');
 	let columns = sql[0].split(',').map(item => item.includes('.') ? item.split('.')[1] : item);
 	let tableName = sql[1].trim().split(' ')[0];
