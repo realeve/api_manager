@@ -236,30 +236,36 @@ let deleteAPI = (id, nonce) => {
     })
 }
 
-let capitalize = str => str[0].toUpperCase() + str.substr(1, str.length);
+let capitalize = str => (str[0].toUpperCase() + str.substr(1, str.length)).replace(/"/g, '');
+let handleTableName = str => {
+    let tblName = capitalize(str);
+    tblName = tblName.replace(/Data/g, '').replace(/Tbl/g, '');
+    let strList = tblName.split('_').map(item => item.length ? capitalize(item) : '');
+    return strList.join('');
+}
 
-let getFucName = sql => {
+let getFucName = (sql, isPatchInsert) => {
     let DATA_MODE = sql.split(' ')[0].toLowerCase();
     let tableName = '', prefix = '';
     switch (DATA_MODE) {
         case 'select':
-            prefix = 'readFrom';
+            prefix = 'get';
             tableName = sql.match(/ from(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
             break;
         case 'insert':
-            prefix = 'addInto';
+            prefix = 'add';
             tableName = sql.match(/ into(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1].split('(')[0].trim();
             break;
         case 'update':
-            prefix = 'upateTbl';
+            prefix = isPatchInsert ? 'sets' : 'set';
             tableName = sql.match(/update(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
             break;
         case 'delete':
-            prefix = 'deleteFrom';
+            prefix = 'del';
             tableName = sql.match(/ from(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
             break;
     }
-    return prefix + capitalize(tableName).replace(/"/g, '');
+    return prefix + handleTableName(tableName);
 }
 
 const getAjaxDemo = row => {
@@ -269,7 +275,7 @@ const getAjaxDemo = row => {
     let text = `{
                 url:'${url}'
             }`
-    let queryParam = params.split(',').map(str => `${str}:'${str}'`).join(',\n');
+    let queryParam = params.split(',').map(str => `${str}:'${str}'`).join(',');
     let isPatchInsert = row[4].includes('insert ') && row[5].includes('values')
     // 批量插入时对参数需做特殊处理
     let preCode = ''
@@ -298,7 +304,7 @@ const getAjaxDemo = row => {
         paramCode = isPatchInsert ? 'formData' : params;
     }
 
-    let funcName = getFucName(row[4]);
+    let funcName = getFucName(row[4], isPatchInsert);
 
     // headers及baseURL在axios实例初始化时指定
     // const headers = {
@@ -309,12 +315,15 @@ const getAjaxDemo = row => {
     if (row[9].trim().length) {
         remark = '\r\n\t以下参数在建立过程中与系统保留字段冲突，已自动替换:\r\n\t' + (row[9].split('<br>').join('\r\n\t'));
     }
+    let showBracket = paramCode.trim().length == 0 || paramCode.includes(',');
+    let asyncText = showBracket ? `async (${paramCode})` : `async ${paramCode}`;
+
     const copyText = `
 \/**
 *   @database: { ${row[1]} }
-*   @desc:     { ${row[2]} } ${remark}
+*   @desc:     { ${isPatchInsert ? '批量' : ''}${row[2]} } ${remark}
 *\/
-let ${funcName} = async (${paramCode})=>{ ${preCode}
+export const ${funcName} = ${asyncText}=>{ ${preCode}
     const data = await axios(${text}).then(res=>res.data);
     return data;
 };

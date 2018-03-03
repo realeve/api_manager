@@ -27,6 +27,7 @@ const validParam = _param => {
 			// 	desc: '数据批量插入时所用的参数，格式为[object,object],objtct表示需要插入的每一项数据。'
 		}];
 	let msg = R.filter(R.propEq('name', param), systemVariants)
+
 	if (msg.length) {
 		return {
 			desc: msg[0].desc,
@@ -49,35 +50,75 @@ const preHandler = str => {
 	let columns = sql[0].split(',').map(item => item.includes('.') ? item.split('.')[1] : item);
 	let tableName = sql[1].trim().split(' ')[0];
 	let whereInfo = sql[1].split('where');
+
 	if (whereInfo.length > 1) {
 		let where = whereInfo[1].replace(/ \>/g, '>').replace(/ \</g, '<').replace(/ \=/g, '=').replace(/  /g, ' ');
 		where = where.replace(/\> /g, '>').replace(/\< /g, '<').replace(/\= /g, '=').trim().split(' ')
 
+		// whereInfo = where.map(item => {
+		// 	if (item.includes('=')) {
+		// 		let val = item.split('=');
+		// 		val[1] = '?';
+		// 		return val.join(' = ');
+		// 	} else if (item.includes('>')) {
+		// 		let val = item.split('>');
+		// 		val[1] = '?';
+		// 		return val.join(' > ');
+		// 	} else if (item.includes('<')) {
+		// 		let val = item.split('<');
+		// 		val[1] = '?';
+		// 		return val.join(' < ');
+		// 	}
+		// 	// and or 等字符
+		// 	return item;
+		// })
+
 		whereInfo = where.map(item => {
-			if (item.includes('=')) {
-				let val = item.split('=');
-				val[1] = '?';
-				return val.join(' = ');
-			} else if (item.includes('>')) {
-				let val = item.split('>');
-				val[1] = '?';
-				return val.join(' > ');
-			} else if (item.includes('<')) {
-				let val = item.split('<');
-				val[1] = '?';
-				return val.join(' < ');
-			}
-			// and or 等字符
-			return item;
-		})
+			let whereItem = item.match(/(\S+)=|(\S+)>|(\S+)</);
+			return (whereItem == null) ? item : whereItem[0] + '?'
+		});
 
 	} else {
 		whereInfo = [];
 	}
+	whereInfo.map((item, idx) => {
+		if (item == 'between') {
+			whereInfo[idx + 1] = '?';
+			whereInfo[idx + 3] = '?';
+		}
+	})
 
 	let safeCondition = [];
 	let safeConditionRemark = [];
-	let queryConditionList = whereInfo.map(item => {
+	// let queryConditionList = whereInfo.map(item => {
+	// 	let _val = item.split('=')[0].split('<')[0].split('>')[0];
+	// 	let val;
+	// 	if (_val.includes('.')) {
+	// 		val = _val.split('.')[1].trim()
+	// 	} else {
+	// 		val = _val.trim();
+	// 	}
+	// 	if (['and', 'or', 'between'].includes(val)) {
+	// 		return;
+	// 	}
+	// 	let sItem = validParam(val);
+	// 	safeCondition.push(sItem.disabled ? ('_' + val) : val)
+	// 	if (sItem.disabled) {
+	// 		safeConditionRemark.push(`@${val}:_${val}. 参数说明：${sItem.desc}`)
+	// 	}
+	// 	return val;
+	// }).filter(item => typeof item != 'undefined');
+
+	let queryConditionList = [];
+	whereInfo.filter(item => !['and', 'or', 'between', '?'].includes(item))
+		.forEach(item => {
+			if (item.includes('?')) { queryConditionList.push(item) }
+			else {
+				queryConditionList = queryConditionList.concat([item + '1', item + '2'])
+			}
+		})
+
+	queryConditionList.map(item => {
 		let _val = item.split('=')[0].split('<')[0].split('>')[0];
 		let val;
 		if (_val.includes('.')) {
@@ -85,17 +126,14 @@ const preHandler = str => {
 		} else {
 			val = _val.trim();
 		}
-		if (['and', 'or', 'between'].includes(val)) {
-			return;
-		}
 		let sItem = validParam(val);
 		safeCondition.push(sItem.disabled ? ('_' + val) : val)
 		if (sItem.disabled) {
 			safeConditionRemark.push(`@${val}:_${val}. 参数说明：${sItem.desc}`)
 		}
 		return val;
-	}).filter(item => typeof item != 'undefined');
-
+	})
+	console.log(queryConditionList)
 	let paramsRemark = [];
 	let params = columns.map(column => {
 		let item = validParam(column);
@@ -103,7 +141,7 @@ const preHandler = str => {
 		if (item.disabled) {
 			paramsRemark.push(`@${column}:_${column}. 参数说明：${item.desc}`)
 		}
-		return paramName;
+		return paramName.replace(/`/g, '').replace(/ /g, '');
 	})
 
 	return {
@@ -125,7 +163,7 @@ const insert = str => {
 	return {
 		sql: `insert into ${sql.tableName}(${sql.columns.join(',')}) values (${values})`.replace(/  /g, ' '),
 		params: sql.params,
-		remarkList: sql.remarkList
+		remarkList: sql.paramsRemark
 	}
 }
 
