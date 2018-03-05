@@ -275,7 +275,7 @@ const getAjaxDemo = row => {
     let text = `{
                 url:'${url}'
             }`
-    let queryParam = params.split(',').map(str => `${str}:'${str}'`).join(',');
+    let queryParam = params;//.split(',').map(str => `${str}:'${str}'`).join(',');
     let isPatchInsert = row[4].includes('insert ') && row[5].includes('values')
     // 批量插入时对参数需做特殊处理
     let preCode = ''
