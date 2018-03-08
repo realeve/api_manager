@@ -313,8 +313,18 @@ const getAjaxDemo = row => {
   if (!params.includes(",")) {
     paramCode = isPatchInsert ? "formData" : params;
   }
-  let preCode = `const ${paramCode} = params;`;
-  let asyncText = "async params";
+  let preCode = "";
+  if (params.length) {
+    if (params.includes(",")) {
+      preCode = `
+    const ${paramCode} = params;`;
+    } else {
+      preCode = `
+    const { ${paramCode} } = params;`;
+    }
+  }
+
+  let asyncText = params.length == 0 ? "async ()" : "async params";
 
   // 批量插入时对参数需做特殊处理
   if (isPatchInsert) {
@@ -360,7 +370,6 @@ const getAjaxDemo = row => {
   if (!isPatchInsert) {
     copyText = `
     ${tipInfo}
-    
     ${preCode}
 *\/
 export const ${funcName} = ${asyncText}=>await axios(${text}).then(res=>res.data); `;
