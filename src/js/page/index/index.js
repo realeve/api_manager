@@ -257,6 +257,7 @@ let deleteAPI = (id, nonce) => {
 let capitalize = str =>
   (str[0].toUpperCase() + str.substr(1, str.length)).replace(/"/g, "");
 let handleTableName = str => {
+  str = str.includes(".") ? str.split(".")[1] : str;
   let tblName = capitalize(str);
   tblName = tblName.replace(/Data/g, "").replace(/Tbl/g, "");
   let strList = tblName
@@ -328,18 +329,16 @@ const getAjaxDemo = row => {
 
   // 批量插入时对参数需做特殊处理
   if (isPatchInsert) {
-    asyncText = "async formData";
+    asyncText = "async values";
     let item = row[9].match(/\[\[(\S+)/g)[0].substr(2);
     queryParam = `values`;
-    preCode = `
-                // 将待插入的数据[{key:value},{key,value}]转换为[value,value]
-                const params = formData.map(
-                    ({ ${item} }) => [${item}]
-                );
-                `;
+    text = `{
+            url:'${url}',
+            params:{values},
+        }`;
   }
 
-  if (params.length) {
+  if (params.length && !isPatchInsert) {
     text = `{
             url:'${url}',
             params,
@@ -363,14 +362,13 @@ const getAjaxDemo = row => {
   let copyText = `
     ${tipInfo}
 *\/
-    export const ${funcName} = ${asyncText}=>{ ${preCode}
-        return await axios(${text}).then(res=>res.data);
-    };  
+    export const ${funcName} = ${asyncText}=>await axios(${text}).then(res=>res);  
 `;
+
   if (!isPatchInsert) {
     copyText = `
-    ${tipInfo}
-    ${preCode}
+  ${tipInfo}
+  ${preCode}
 *\/
 export const ${funcName} = ${asyncText}=>await axios(${text}).then(res=>res.data); `;
   }

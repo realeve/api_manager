@@ -197,9 +197,9 @@ const insertPatch = str => {
     params: ["values"],
     columns: sql.columns,
     remarkList: [
-      `@desc:批量插入数据时，约定使用二维数组values参数，格式为[[${sql.columns.join(
+      `@desc:批量插入数据时，约定使用二维数组values参数，格式为[{${sql.columns.join(
         ","
-      )}]]，数组的每一项表示一条数据`
+      )}}]，数组的每一项表示一条数据`
     ]
   };
 };
