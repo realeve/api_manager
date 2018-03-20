@@ -370,7 +370,7 @@ const getAjaxDemo = row => {
   ${tipInfo}
   ${preCode}
 *\/
-export const ${funcName} = ${asyncText}=>await axios(${text}).then(res=>res.data); `;
+export const ${funcName} = ${asyncText}=>await axios(${text}).then(res=>res); `;
   }
 
   return beautify(copyText, {
