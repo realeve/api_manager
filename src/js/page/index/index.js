@@ -333,9 +333,8 @@ const getAjaxDemo = row => {
     let item = row[9].match(/\[\[(\S+)/g)[0].substr(2);
     queryParam = `values`;
     text = `{
-            url:'${url}',
             method:'post',
-            data:{values},
+            data:{values,id:${row[0]},nonce:'${row[3]}'},
         }`;
   }
 
