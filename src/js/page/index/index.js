@@ -334,7 +334,8 @@ const getAjaxDemo = row => {
     queryParam = `values`;
     text = `{
             url:'${url}',
-            params:{values},
+            method:'post',
+            data:{values},
         }`;
   }
 
