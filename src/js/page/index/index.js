@@ -418,7 +418,7 @@ let refreshData = () => {
       row.push(btnEdit + btnDel + btnCopy);
 
       row[4] = {
-        data: row[4],
+        data: row[4].replace(/\\'/g, "'"),
         class: "break"
       };
 
