@@ -291,6 +291,12 @@ let getFucName = (sql, isPatchInsert) => {
       prefix = "del";
       tableName = sql.match(/ from(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
       break;
+    case "call":
+      prefix = "call";
+      tableName = sql.split(" ")[1].split("(")[0];
+    case "exec":
+      prefix = "call";
+      tableName = sql.split(" ")[1].split("@")[0];
   }
   return prefix + handleTableName(tableName);
 };
