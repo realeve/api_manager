@@ -257,6 +257,7 @@ let deleteAPI = (id, nonce) => {
 let capitalize = str =>
   (str[0].toUpperCase() + str.substr(1, str.length)).replace(/"/g, "");
 let handleTableName = str => {
+  str = str.toLowerCase();
   str = str.includes(".") ? str.split(".")[1] : str;
   let tblName = capitalize(str);
   tblName = tblName.replace(/Data/g, "").replace(/Tbl/g, "");
@@ -273,7 +274,8 @@ let getFucName = (sql, isPatchInsert) => {
   switch (DATA_MODE) {
     case "select":
       prefix = "get";
-      tableName = sql.match(/ from(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
+      tableName = sql.match(/ from(\s+)(\S+)/gi);
+      tableName = tableName[tableName.length - 1].match(/(\S+)/gi)[1];
       break;
     case "insert":
       prefix = "add";
@@ -298,7 +300,10 @@ let getFucName = (sql, isPatchInsert) => {
       prefix = "call";
       tableName = sql.split(" ")[1].split("@")[0];
   }
-  return prefix + handleTableName(tableName);
+  return {
+    funcName: prefix + handleTableName(tableName),
+    mode: DATA_MODE
+  };
 };
 
 const getAjaxDemo = row => {
@@ -323,15 +328,24 @@ const getAjaxDemo = row => {
   let preCode = "";
   if (params.length) {
     if (params.includes(",")) {
-      preCode = `
-    const ${paramCode} = params;`;
-    } else {
-      preCode = `
-    const { ${paramCode} } = params;`;
+      preCode = `const ${paramCode} = params;`;
     }
   }
 
-  let asyncText = params.length == 0 ? "async ()" : "async params";
+  let { funcName, mode } = getFucName(row[4], isPatchInsert);
+
+  let asyncText;
+  let param = ("" + params).split(",");
+  switch (param.length) {
+    case 1:
+      asyncText = param[0] === "" ? "async ()" : `async ${param[0]}`;
+      break;
+    default:
+      asyncText = "async params";
+      break;
+  }
+
+  let assignInfo = `export const ${funcName} = ${asyncText}=>await axios`;
 
   // 批量插入时对参数需做特殊处理
   if (isPatchInsert) {
@@ -345,13 +359,18 @@ const getAjaxDemo = row => {
   }
 
   if (params.length && !isPatchInsert) {
-    text = `{
-            url:'${url}',
-            params,
-        }`;
+    if (param.length > 1) {
+      text = `{
+          url:'${url}',
+          params,
+      }`;
+    } else {
+      text = `{
+          url:'${url}',
+          params:{${param[0]}},
+      }`;
+    }
   }
-
-  let funcName = getFucName(row[4], isPatchInsert);
 
   let remark = "";
   if (row[9].trim().length) {
@@ -368,7 +387,7 @@ const getAjaxDemo = row => {
   let copyText = `
     ${tipInfo}
 *\/
-    export const ${funcName} = ${asyncText}=>await axios(${text}).then(res=>res);  
+    ${assignInfo}(${text}).then(res=>res);  
 `;
 
   if (!isPatchInsert) {
@@ -376,7 +395,7 @@ const getAjaxDemo = row => {
   ${tipInfo}
   ${preCode}
 *\/
-export const ${funcName} = ${asyncText}=>await axios(${text}).then(res=>res); `;
+${assignInfo}(${text}).then(res=>res); `;
   }
 
   return beautify(copyText, {
