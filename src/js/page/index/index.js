@@ -325,12 +325,6 @@ const getAjaxDemo = row => {
   if (!params.includes(",")) {
     paramCode = isPatchInsert ? "formData" : params;
   }
-  let preCode = "";
-  if (params.length) {
-    if (params.includes(",")) {
-      preCode = `const ${paramCode} = params;`;
-    }
-  }
 
   let { funcName, mode } = getFucName(row[4], isPatchInsert);
 
@@ -384,18 +378,25 @@ const getAjaxDemo = row => {
 *   @database: { ${row[1]} }
 *   @desc:     { ${isPatchInsert ? "批量" : ""}${row[2]} } ${remark}`;
 
-  let copyText = `
-    ${tipInfo}
-*\/
+  let copyText = `${tipInfo}*\/
     ${assignInfo}(${text}).then(res=>res);  
 `;
 
+  let preCode = "";
+
   if (!isPatchInsert) {
-    copyText = `
-  ${tipInfo}
-  ${preCode}
+    if (params.length && params.includes(",")) {
+      copyText = `
+        ${tipInfo}
+    const ${paramCode} = params;
 *\/
-${assignInfo}(${text}).then(res=>res); `;
+      ${assignInfo}(${text}).then(res=>res); `;
+    } else {
+      copyText = `
+        ${tipInfo}
+      *\/
+      ${assignInfo}(${text}).then(res=>res); `;
+    }
   }
 
   return beautify(copyText, {
