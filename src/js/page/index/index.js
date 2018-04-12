@@ -344,7 +344,7 @@ const getAjaxDemo = row => {
   // 批量插入时对参数需做特殊处理
   if (isPatchInsert) {
     asyncText = "async values";
-    let item = row[9].match(/\[\[(\S+)/g)[0].substr(2);
+    // let item = row[9].match(/\[\[(\S+)/g)[0].substr(2);
     queryParam = `values`;
     text = `{
             method:'post',
