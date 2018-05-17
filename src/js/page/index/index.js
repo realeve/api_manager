@@ -1,6 +1,8 @@
 import data2file from "../common/exportTable";
 import lib from "../common/lib";
-import { axios } from "../common/axios";
+import {
+  axios
+} from "../common/axios";
 import select2 from "./select2/select2";
 import language from "./datatable";
 import tableApp from "../common/renderTable";
@@ -130,12 +132,14 @@ let resetNewModal = () => {
 };
 
 let initEditBtn = () => {
-  $("tbody").on("click", 'button[name="edit"]', function() {
+  $("tbody").on("click", 'button[name="edit"]', function () {
     let id = $(this).data("id");
     curType = addType.EDIT;
     editingData = tblData.filter(item => item[0] == id)[0];
     $('#addapi [name="api_name"]').val(editingData[2]);
+
     select2.value("db_id", editingData[8]);
+
     // 待调试
     $('#addapi [name="param"]').tagsinput("removeAll");
     $('#addapi [name="param"]').tagsinput("add", editingData[5]);
@@ -149,7 +153,7 @@ let initEditBtn = () => {
 };
 
 let initDelBtn = () => {
-  $("tbody").on("confirmed.bs.confirmation", 'button[name="del"]', function() {
+  $("tbody").on("confirmed.bs.confirmation", 'button[name="del"]', function () {
     let id = $(this).data("id");
     // deleteDataFromIdx(id);
     // $(this).parents('tr').remove();
@@ -160,7 +164,7 @@ let initDelBtn = () => {
 let initCopyBtn = () => {
   var btns = document.querySelectorAll(".copy");
   var clipboard = new Clipboard(btns);
-  clipboard.on("success", function(e) {
+  clipboard.on("success", function (e) {
     lib.tip("调用代码已复制至剪贴板。");
   });
   if (previewInitFlag) {
@@ -168,7 +172,7 @@ let initCopyBtn = () => {
   }
   previewInitFlag = true;
 
-  $("tbody").on("click", '[name="preview"]', function() {
+  $("tbody").on("click", '[name="preview"]', function () {
     App.scrollTop();
     let url = $(this).data("url") + "&cache=0";
     let surl = $(this).data("surl");
@@ -194,8 +198,8 @@ let initCopyBtn = () => {
 
     if (
       $(this)
-        .data("params")
-        .trim().length
+      .data("params")
+      .trim().length
     ) {
       const resultStr = beautify(
         JSON.stringify({
@@ -206,7 +210,9 @@ let initCopyBtn = () => {
       resultEditor.setValue(resultStr);
       return;
     }
-    axios({ url }).then(data => {
+    axios({
+      url
+    }).then(data => {
       const resultStr = beautify(JSON.stringify(data), beautyOption);
       resultEditor.setValue(resultStr);
     });
@@ -326,7 +332,10 @@ const getAjaxDemo = row => {
     paramCode = isPatchInsert ? "formData" : params;
   }
 
-  let { funcName, mode } = getFucName(row[4], isPatchInsert);
+  let {
+    funcName,
+    mode
+  } = getFucName(row[4], isPatchInsert);
 
   let asyncText;
   let param = ("" + params).split(",");
@@ -475,8 +484,7 @@ let initDatatable = res => {
   table = $(".result-content .table").dataTable({
     language,
     destroy: true,
-    columnDefs: [
-      {
+    columnDefs: [{
         targets: [5],
         visible: false,
         searchable: false
@@ -495,16 +503,18 @@ let initDatatable = res => {
       [5, 10, 15, 20, 50, 100, -1],
       [5, 10, 15, 20, 50, 100, "所有"] // change per page values here
     ],
-    order: [[1, "desc"]],
+    order: [
+      [1, "desc"]
+    ],
     bOrder: false,
     bProcessing: true,
     bStateSave: true,
     bScrollInfinite: true,
     searchHighlight: true, //高亮
     pageLength: 10,
-    initComplete: function(settings) {
+    initComplete: function (settings) {
       var api = this.api();
-      api.on("click", "tbody td", function() {
+      api.on("click", "tbody td", function () {
         const text = $(this)
           .text()
           .toLowerCase();
@@ -523,7 +533,7 @@ let initDatatable = res => {
 };
 
 const initAddPanel = () => {
-  $('[name="api-parse"]').on("click", function() {
+  $('[name="api-parse"]').on("click", function () {
     let $dom = $(this);
     let mode = $dom.data("mode");
     let sqlstr = $('#addapi [name="sqlstr"]').val();
