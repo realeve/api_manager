@@ -50,13 +50,12 @@ let render = (name, data) => {
     id: "",
     text: ""
   }, ...data];
-  //   dom.select2({
-  //     data
-  //   })
-  let html = getHtml(data);
-  dom.html(html);
-  console.log(html)
-  //   dom.select2();
+  dom.select2({
+    data
+  })
+  // let html = getHtml(data);
+  // dom.html(html);
+  // console.log(html)
 }
 
 // https://select2.org/data-sources/ajax
