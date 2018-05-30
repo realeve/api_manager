@@ -302,14 +302,17 @@ let getFucName = (sql, isPatchInsert) => {
     case "call":
       prefix = "call";
       tableName = sql.split(" ")[1].split("(")[0];
+      break;
     case "exec":
       prefix = "call";
       tableName = sql.split(" ")[1].split("@")[0];
+      break;
     case "with":
     default:
       prefix = "get";
       tableName = 1;
       tableName = sql.match(/ from(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
+      break;
   }
   return {
     funcName: prefix + handleTableName(tableName),
