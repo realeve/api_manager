@@ -434,7 +434,10 @@ let refreshData = () => {
     }
   };
   axios(option).then(res => {
-    tblData = res.data;
+    tblData = res.data.map(item => {
+      item[8] = parseInt(item[8], 10);
+      return item;
+    });
     res.header[4] = {
       data: res.header[4],
       width: "450px"

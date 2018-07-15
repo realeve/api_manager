@@ -2,52 +2,53 @@
 <html lang="zh-cn">
 
 <head>
-    @@include('../common/css.html')
+  @@include('../common/css.html')
 
-    <link rel="stylesheet" href="./css/plugins/select2.css">
-    <link rel="stylesheet" href="./css/plugins/select2-bootstrap.css">
-    <link rel="stylesheet" href="./css/plugins/bootstrap-tagsinput.css">
-    <link rel="stylesheet" href="./css/plugins/dataTables.bootstrap.css">
-    <link rel="stylesheet" href="./css/plugins/dataTables.searchHighlight.css">
-    <link rel="stylesheet" href="./css/plugins/codemirror.min.css"></link>
-    <link rel="stylesheet" href="./css/plugins/material.min.css"></link>
-    <link rel="stylesheet" href="./css/page/index.css">
+  <link rel="stylesheet" href="./css/plugins/select2.css">
+  <link rel="stylesheet" href="./css/plugins/select2-bootstrap.css">
+  <link rel="stylesheet" href="./css/plugins/bootstrap-tagsinput.css">
+  <link rel="stylesheet" href="./css/plugins/dataTables.bootstrap.css">
+  <link rel="stylesheet" href="./css/plugins/dataTables.searchHighlight.css">
+  <link rel="stylesheet" href="./css/plugins/codemirror.min.css"></link>
+  <link rel="stylesheet" href="./css/plugins/material.min.css"></link>
+  <link rel="stylesheet" href="./css/page/index.css">
 </head>
 
 <body class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo">
-    @@include('../common/header_menu.html')
-    <div class="page-container">
-        <div class="page-content-wrapper">
-            <div class="page-content padding-top-0">
-                @@include('../content/index.html')
-            </div>
-        </div>
+  @@include('../common/header_menu.html')
+  <div class="page-container">
+    <div class="page-content-wrapper">
+      <div class="page-content padding-top-0">
+        @@include('../content/index.html')
+      </div>
     </div>
-    @@include('../common/copyright.html') @@include('../common/scripts.html')
+  </div>
+  @@include('../common/copyright.html') @@include('../common/scripts.html')
 
-    <!-- file export start -->
-    <script src="./js/plugins/bootstrap-confirmation.js"></script>
-    <script src="./js/plugins/export/FileSaver.js"></script>
-    <script src="./js/plugins/export/jszip.js"></script>
-    <script src="./js/plugins/export/pdfmake.js"></script>
-    <script src="./js/plugins/export/vfs_fonts.js"></script>
+  <!-- file export start -->
+  <script src="./js/plugins/bootstrap-confirmation.js"></script>
+  <script src="./js/plugins/export/FileSaver.js"></script>
+  <script src="./js/plugins/export/jszip.js"></script>
+  <!-- <script src="./js/plugins/export/pdfmake.js"></script> -->
+  <!-- <script src="./js/plugins/export/vfs_fonts.js"></script> -->
 
-    <script src="./js/plugins/bootstrap-tagsinput.js"></script>
-    <script src="./js/plugins/select2.full.js"></script>
+  <script src="./js/plugins/bootstrap-tagsinput.js"></script>
+  <script src="./js/plugins/select2.full.js"></script>
 
-    <script src="./js/plugins/jquery.dataTables.js"></script>
-    <script src="./js/plugins/dataTables.bootstrap.js"></script>
-    <script src="./js/plugins/jquery.highlight.js"></script>
-    <script src="./js/plugins/dataTables.searchHighlight.js"></script>
+  <script src="./js/plugins/jquery.dataTables.js"></script>
+  <script src="./js/plugins/dataTables.bootstrap.js"></script>
+  <script src="./js/plugins/jquery.highlight.js"></script>
+  <script src="./js/plugins/dataTables.searchHighlight.js"></script>
 
-    <script src="./js/plugins/codemirror/codemirror.min.js"></script>
-    <script src="./js/plugins/codemirror/javascript.min.js"></script>
-    <!-- file export end -->
+  <script src="./js/plugins/codemirror/codemirror.min.js"></script>
+  <script src="./js/plugins/codemirror/javascript.min.js"></script>
+  <!-- file export end -->
 
-    <script src="./js/page/index.js"></script>
-    <script>
-        NProgress.done();
-    </script>
+  <script src="./js/page/index.js"></script>
+  <script>
+    NProgress.done();
+
+  </script>
 </body>
 
 </html>
