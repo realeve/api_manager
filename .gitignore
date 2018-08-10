@@ -1,6 +1,5 @@
 .DS_Store
 .Archive
-dist
 node_modules/
 npm-debug.log
 yarn-error.log
@@ -9,4 +8,5 @@ yarn-debug.log*
 yarn-error.log*
 src/store/modules/user.js
 ~$*.*
-dist
+dist/
+api/
