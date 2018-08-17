@@ -116,7 +116,7 @@ let initEvent = () => {
     };
     editor = CodeMirror.fromTextArea($("#codeContent")[0], option);
     resultEditor = CodeMirror.fromTextArea($("#result")[0], option);
-    editor.setSize("100%", "340px");
+    editor.setSize("100%", "780px");
     resultEditor.setSize("100%", "340px");
 };
 
@@ -174,17 +174,6 @@ let initCopyBtn = () => {
 
     $("tbody").on("click", '[name="preview"]', function() {
         App.scrollTop();
-        let url = $(this).data("url") + "&cache=0";
-        let surl = $(this).data("surl");
-        const urls = [
-            apps.host + url,
-            apps.host + surl + ".json?cache=5",
-            apps.host + surl + ".html",
-            apps.host + surl + ".html?mode=array",
-            apps.host + surl + "/array.json",
-            apps.host + surl + "/json.json"
-        ];
-        $("#codeurl").html(urls.join("<br>"));
 
         const code = $(this).data("clipboard-text");
         let beautyOption = {
@@ -194,7 +183,34 @@ let initCopyBtn = () => {
         };
         const codeStr = beautify(code, beautyOption);
 
-        editor.setValue(codeStr);
+        const codePost = $(this).data("post-mode");
+        const postModeStr = beautify(codePost, beautyOption);
+        const codeNodeStr = codeStr.replace('export const ', 'module.exports.').replace('/**', '/** NodeJS服务端调用：\n*');
+
+        editor.setValue(codeStr + '\n\r\n\r' + postModeStr.replace('/**', '/** 数据量较大时建议使用post模式：\n*') + '\n\r\n\r' + codeNodeStr);
+
+        let url = $(this).data("url") + "&cache=0";
+        let surl = $(this).data("surl");
+        const urls = [
+            '默认参数，cache[缓存]0,mode[数据格式]json：',
+            apps.host + url + '&mode=json',
+
+            apps.host + surl + ".json?cache=5",
+            '<br>文件后缀可用任何类型：.html,.json,.jpg',
+            apps.host + surl + ".html",
+
+            '<br>url第三段为数值时表示缓存，默认json，需要返回数组时加mode参数',
+            apps.host + surl + "/5.html?mode=array",
+            apps.host + surl + "/5.html",
+
+            '<br>请求最短的形式如下：',
+            apps.host + surl,
+
+            apps.host + surl + "/array.json",
+            apps.host + surl + "/json.json"
+        ];
+
+        $("#codeurl").html(urls.join("<br>"));
 
         if (
             $(this)
@@ -264,6 +280,10 @@ let capitalize = str =>
     (str[0].toUpperCase() + str.substr(1, str.length)).replace(/"/g, "");
 let handleTableName = str => {
     str = str.toLowerCase();
+    if (str.includes('@')) {
+        let [_t, _db] = str.split('@');
+        str = _t + 'From' + capitalize(_db)
+    }
     str = str.includes(".") ? str.split(".")[1] : str;
     let tblName = capitalize(str);
     tblName = tblName.replace(/Data/g, "").replace(/Tbl/g, "");
@@ -328,7 +348,7 @@ let getFucName = (sql, isPatchInsert) => {
     };
 };
 
-const getAjaxDemo = row => {
+const getAjaxDemo = (row, postMode = false) => {
     const url = `/${row[0]}/${row[3]}.json`;
     let params = row[5]
         .trim()
@@ -391,8 +411,21 @@ const getAjaxDemo = row => {
         }
     }
 
+    if (postMode) {
+        asyncText = "async params";
+        queryParam = `params`;
+        text = `{
+            method:'post',
+            data:{
+                ...params,
+                id:${row[0]},
+                nonce:'${row[3]}'
+            },
+        }`;
+    }
+
     let remark = "";
-    if (row[9].trim().length) {
+    if (row[9].trim().length > 0) {
         remark =
             "\r\n\t以下参数在建立过程中与系统保留字段冲突，已自动替换:\r\n\t" +
             row[9].split("<br>").join("\r\n\t");
@@ -455,6 +488,8 @@ let refreshData = () => {
 
         res.data = res.data.map((row, i) => {
             const copyText = getAjaxDemo(row);
+            const postMode = getAjaxDemo(row, true);
+
             let btnDel = `<button type="button" name="del" data-toggle="confirmation" data-original-title="确认删除本接口?" data-singleton="true" data-btn-ok-label="是" data-btn-cancel-label="否" data-id="${
         row[0]
       }" data-nonce="${row[3]}" class="btn red-haze btn-sm">删除</button>`;
@@ -467,7 +502,7 @@ let refreshData = () => {
         row[3]
       }" class="btn btn-sm copy ${
         row[5] == "" ? "green-jungle" : ""
-      }" data-clipboard-text="${copyText}">调用代码</button>`;
+      }" data-clipboard-text="${copyText}" data-post-mode="${postMode}">调用代码</button>`;
 
             row.push(btnEdit + btnDel + btnCopy);
 
@@ -571,6 +606,13 @@ const initAddPanel = () => {
     });
 };
 
+const renderDefaultParam = () => {
+    $('#defaultParam').html(sqlFormatter.systemVariants.map(({
+        name,
+        desc
+    }) => `<p><span class="bold margin-right-10">${name}:</span>${desc}</p>`).join(''));
+}
+
 let init = async() => {
     initEvent();
     refreshData();
@@ -579,6 +621,7 @@ let init = async() => {
     select2.init();
     select2InitFlag = true;
     $(".bootstrap-tagsinput").css("width", "85%");
+    renderDefaultParam();
 };
 export default {
     init
