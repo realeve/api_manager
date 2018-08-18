@@ -100,7 +100,7 @@ gulp.task(bui["js"], function () {
         .src([...watch.js, "!./src/js/page/*"])
         .pipe(plumber())
         .pipe(changed(deploy.js))
-        // .pipe(uglify())
+        .pipe(uglify())
         .pipe(flatten({ includeParents: [1, 1] }))
         .pipe(gulp.dest(deploy.js)));
 });
@@ -120,7 +120,7 @@ gulp.task(bui["babel"], function () {
         .pipe(gulp.dest(distDir))
         .pipe(named()) // 使用原文件名作为输出文件名
         .pipe(webpack())
-        // .pipe(uglify())
+        .pipe(uglify())
         .pipe(flatten({ includeParents: [1, 1] }))
         .pipe(gulp.dest(distDir)));
 });
