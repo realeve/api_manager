@@ -337,6 +337,11 @@ let getFucName = (sql, isPatchInsert) => {
             break;
         case "with":
         default:
+            if (['http://', 'https:/'].includes(sql.substr(0, 7))) {
+                prefix = "proxy";
+                tableName = sql.match(/:\/\/([a-zA-Z0-9.]+)/)[1].replace(/www\.|\.com/g, '').replace(/\./g, '_');
+                break;
+            }
             prefix = "get";
             tableName = 1;
             tableName = sql.match(/ from(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
