@@ -382,18 +382,18 @@ const getAjaxDemo = (row, postMode = false) => {
     let param = ("" + params).split(",");
     switch (param.length) {
         case 1:
-            asyncText = param[0] === "" ? "async ()" : `async ${param[0]}`;
+            asyncText = param[0] === "" ? "()" : `${param[0]}`;
             break;
         default:
-            asyncText = "async params";
+            asyncText = "params";
             break;
     }
 
-    let assignInfo = `export const ${funcName} = ${asyncText}=>await axios`;
+    let assignInfo = `export const ${funcName} = ${asyncText}=>axios`;
 
     // 批量插入时对参数需做特殊处理
     if (isPatchInsert) {
-        asyncText = "async values";
+        asyncText = "values";
         // let item = row[9].match(/\[\[(\S+)/g)[0].substr(2);
         queryParam = `values`;
         text = `{
@@ -417,12 +417,29 @@ const getAjaxDemo = (row, postMode = false) => {
     }
 
     if (postMode) {
-        asyncText = "async params";
-        queryParam = `params`;
-        text = `{
+        let decodeStr = '';
+        switch (asyncText) {
+            case "params":
+                decodeStr = '...params,';
+                break;
+            case "()":
+                decodeStr = "";
+                break;
+            default:
+                decodeStr = asyncText + ',';
+                break;
+        }
+
+        text = decodeStr.length ? `{
             method:'post',
             data:{
-                ...params,
+                ${decodeStr}
+                id:${row[0]},
+                nonce:'${row[3]}'
+            },
+        }` : `{
+            method:'post',
+            data:{
                 id:${row[0]},
                 nonce:'${row[3]}'
             },
@@ -442,7 +459,7 @@ const getAjaxDemo = (row, postMode = false) => {
 *   @desc:     { ${isPatchInsert ? "批量" : ""}${row[2]} } ${remark}`;
 
     let copyText = `${tipInfo}*\/
-    ${assignInfo}(${text}).then(res=>res);  
+    ${assignInfo}(${text});  
 `;
 
     let preCode = "";
@@ -453,12 +470,12 @@ const getAjaxDemo = (row, postMode = false) => {
         ${tipInfo}
     const ${paramCode} = params;
 *\/
-      ${assignInfo}(${text}).then(res=>res); `;
+      ${assignInfo}(${text}); `;
         } else {
             copyText = `
         ${tipInfo}
       *\/
-      ${assignInfo}(${text}).then(res=>res); `;
+      ${assignInfo}(${text}); `;
         }
     }
 
