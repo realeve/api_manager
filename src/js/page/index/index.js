@@ -208,7 +208,6 @@ let initCopyBtn = () => {
             apps.host + surl + ".xml",
             apps.host + surl + ".html",
             apps.host + surl + ".jpg",
-            apps.host + surl + "/xml",
             apps.host + surl + "/5.xml",
         ];
 
