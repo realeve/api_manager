@@ -193,21 +193,23 @@ let initCopyBtn = () => {
         let surl = $(this).data("surl");
         const urls = [
             '默认参数，cache[缓存]0,mode[数据格式]json：',
-            apps.host + url + '&mode=json',
+            apps.host + url + '&mode=json&data_type=json',
 
             apps.host + surl + ".json?cache=5",
-            '<br>文件后缀可用任何类型：.html,.json,.jpg',
-            apps.host + surl + ".html",
 
             '<br>url第三段为数值时表示缓存，默认json，需要返回数组时加mode参数',
             apps.host + surl + "/5.html?mode=array",
             apps.host + surl + "/5.html",
 
-            '<br>请求最短的形式如下：',
+            '<br>url后缀表示数据类型:设为xml时以xml返回，否则以json返回，设为array时json数据项将转换为数组而非对象。后缀也可设为.html,.jpg，默认以json的形式输出：',
             apps.host + surl,
-
-            apps.host + surl + "/array.json",
-            apps.host + surl + "/json.json"
+            apps.host + surl + ".json",
+            apps.host + surl + ".array",
+            apps.host + surl + ".xml",
+            apps.host + surl + ".html",
+            apps.host + surl + ".jpg",
+            apps.host + surl + "/xml",
+            apps.host + surl + "/5.xml",
         ];
 
         $("#codeurl").html(urls.join("<br>"));
@@ -355,6 +357,8 @@ let getFucName = (sql, isPatchInsert) => {
 
 const getAjaxDemo = (row, postMode = false) => {
     const url = `/${row[0]}/${row[3]}.json`;
+    row[5] = row[5] || '';
+    row[4] = row[4] || '';
     let params = row[5]
         .trim()
         .replace(/\n/g, " ")
@@ -488,7 +492,7 @@ const getAjaxDemo = (row, postMode = false) => {
 
 let refreshData = () => {
     var option = {
-        url: "1/e61799e7ab/array.json",
+        url: "1/e61799e7ab/array",
         params: {
             // id: 1,
             // mode: 'array'
@@ -497,16 +501,19 @@ let refreshData = () => {
         }
     };
     axios(option).then(res => {
+
         tblData = res.data.map(item => {
             item[8] = parseInt(item[8], 10);
             return item;
         });
+
         res.header[4] = {
             data: res.header[4],
             width: "450px"
         };
         exportConfig.header = ["#", ...res.header];
         exportConfig.body = res.data.map((row, i) => [i + 1, ...row]);
+
 
         res.data = res.data.map((row, i) => {
             const copyText = getAjaxDemo(row);

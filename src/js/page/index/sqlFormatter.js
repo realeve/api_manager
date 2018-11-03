@@ -23,13 +23,18 @@ let systemVariants = [{
     {
         name: "mode",
         desc: "数据返回模式，array|object两种，默认array传输更少的数据。"
-            // }, {
-            // 	name: 'values',
-            // 	desc: '数据批量插入时所用的参数，格式为[object,object],objtct表示需要插入的每一项数据。'
+    },
+    {
+        name: 'data_type',
+        desc: '当设为xml时以xml格式输出，默认为json。xml格式不允许中文字符做key，如果查询alias Name 有中文，请将 mode设为array,如 /api/apiId/noncer/array.xml'
     },
     {
         name: 'blob',
-        desc: "指定哪些字段是二进数据，array|string。<br>例如在json输出的数据格式中，blob = ['img_data'] 时，img_data将会被base64编码;<br>在array输出时，blob=[5]时，每项数据的第5项将会被base64编码。<br><br>示例url:<br>api.example.com/171/994d3ec6b8/5.json?blob[]=img_data<br>api.example.com/171/994d3ec6b8/5?mode=array&blob[]=5<br>api.example.com/api/172/521dfce816.json?cache=5&blob[]=ErrImage1&blob[]=ErrImage2&blob[]=ErrImage3"
+        desc: "指定哪些字段是二进数据，array|string。<br>例如在json输出的数据格式中，blob = ['img_data'] 时，img_data将会被base64编码;<br>在array输出时，blob=[5]时，每项数据的第5项将会被base64编码。<br><br>示例url:<br>api.example.com/171/994d3ec6b8/5.json?blob[]=img_data&date_type=jpg<br>api.example.com/171/994d3ec6b8/5?mode=array&blob[]=5<br>api.example.com/api/172/521dfce816.json?cache=5&blob[]=ErrImage1&blob[]=ErrImage2&blob[]=ErrImage3&date_type=jpg"
+    },
+    {
+        name: 'blob_type',
+        desc: '指定二进制字段的数据类型，自动在前面补上base64描述信息，可传字段如：jpg,png,bmp等'
     }
 ];
 const validParam = _param => {

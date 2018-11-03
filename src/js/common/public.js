@@ -3,9 +3,9 @@
  */
 // 由于需要全局传递数据，该文件不做babel转码及后续的webpack打包，请使用ES5。
 var apps = (function() {
-    // var host = "http://localhost:90/api/";
+    var host = "http://localhost:90/api/";
     // host = "//10.8.1.25:100/api/";
-    var host = "//api.cbpc.ltd/";
+    // var host = "//api.cbpc.ltd/";
 
     var token = "";
     // 业务经办人

@@ -1,4 +1,6 @@
-import { axios } from '../common/axios';
+import {
+    axios
+} from '../common/axios';
 import tableApp from '../common/renderTable';
 import lib from '../common/lib';
 
@@ -18,9 +20,9 @@ let init = () => {
     refreshData();
 }
 
-let refreshData = async () => {
+let refreshData = async() => {
     return await axios({
-        url: '3/e4e497e849/array.json',
+        url: '3/e4e497e849/array',
         params: {
             // id: 3,
             // nonce: 'e4e497e849',
@@ -57,7 +59,7 @@ let initEvent = () => {
 }
 
 let initDelBtn = () => {
-    $('tbody').on('confirmed.bs.confirmation', 'button[name="del"]', function () {
+    $('tbody').on('confirmed.bs.confirmation', 'button[name="del"]', function() {
         let id = $(this).data('id');
         deleteDB(id);
     });
@@ -65,7 +67,7 @@ let initDelBtn = () => {
 
 
 let initEditBtn = () => {
-    $('tbody').on('click', 'button[name="edit"]', function () {
+    $('tbody').on('click', 'button[name="edit"]', function() {
         let id = $(this).data('id');
         curType = addType.EDIT;
         editingData = tblData.filter(item => item[0] == id)[0];
@@ -107,7 +109,7 @@ let resetNewModal = () => {
     $('#addapi .modal-title').text('新增数据库');
 }
 
-let addDB = async () => {
+let addDB = async() => {
     // 此处需将空字符，全角问号等全部替换
     let data = {
         db_name: $('#addapi [name="db_name"]').val(),
