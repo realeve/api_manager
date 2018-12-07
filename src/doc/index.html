@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>数据接口开放平台</title>
+    <meta name="description" content="整合SQLServer、MySql、ORACLE三大关系型数据库，抹平数据后端差异。">
+    
+    
+    <link rel="preload" href="/doc/assets/css/0.styles.9408f094.css" as="style"><link rel="preload" href="/doc/assets/js/app.b8ad832f.js" as="script"><link rel="preload" href="/doc/assets/js/2.bd2776c9.js" as="script"><link rel="preload" href="/doc/assets/js/3.89829f43.js" as="script"><link rel="prefetch" href="/doc/assets/js/10.35b6008f.js"><link rel="prefetch" href="/doc/assets/js/11.b8b88ee8.js"><link rel="prefetch" href="/doc/assets/js/12.23a36436.js"><link rel="prefetch" href="/doc/assets/js/13.46e57a00.js"><link rel="prefetch" href="/doc/assets/js/14.ea17d05a.js"><link rel="prefetch" href="/doc/assets/js/15.1c99ef4c.js"><link rel="prefetch" href="/doc/assets/js/16.653af29c.js"><link rel="prefetch" href="/doc/assets/js/17.478dfae4.js"><link rel="prefetch" href="/doc/assets/js/18.c1ad6436.js"><link rel="prefetch" href="/doc/assets/js/4.d983c6cf.js"><link rel="prefetch" href="/doc/assets/js/5.e97daa56.js"><link rel="prefetch" href="/doc/assets/js/6.14615926.js"><link rel="prefetch" href="/doc/assets/js/7.541ece69.js"><link rel="prefetch" href="/doc/assets/js/8.334bceee.js"><link rel="prefetch" href="/doc/assets/js/9.834adab2.js">
+    <link rel="stylesheet" href="/doc/assets/css/0.styles.9408f094.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/doc/" class="home-link router-link-exact-active router-link-active"><!----> <span class="site-name">数据接口开放平台</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/doc/guide/" class="nav-link">手册</a></div><div class="nav-item"><a href="/doc/advance/" class="nav-link">进阶</a></div><div class="nav-item"><a href="http://10.8.1.25:100" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  进入系统
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <a href="https://github.com/realeve/api_manager" target="_blank" rel="noopener noreferrer" class="repo-link">
+    查看源码
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <div class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/doc/guide/" class="nav-link">手册</a></div><div class="nav-item"><a href="/doc/advance/" class="nav-link">进阶</a></div><div class="nav-item"><a href="http://10.8.1.25:100" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  进入系统
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <a href="https://github.com/realeve/api_manager" target="_blank" rel="noopener noreferrer" class="repo-link">
+    查看源码
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <!----> </div> <div class="home"><div class="hero"><img src="/doc/logo.svg" alt="hero"> <h1>数据接口开放平台</h1> <p class="description">
+      整合SQLServer、MySql、ORACLE三大关系型数据库，抹平数据后端差异。
+    </p> <p class="action"><a href="/doc/guide/" class="nav-link action-button">快速上手 →</a></p></div> <div class="features"><div class="feature"><h2>接口鉴权</h2> <p>基于JWT的接口鉴权，将用户身份状态与后端剥离，方便横向扩展，分布式部署。</p></div><div class="feature"><h2>快速高效</h2> <p>基于PHP7.0，根据不同使用场景精准提供细粒度的前后端接口数据缓存方案。</p></div><div class="feature"><h2>自动生成调用代码</h2> <p>一键生成前台调用代码,风格统一。函数名、变量、参数、接口注释自动适配。</p></div><div class="feature"><h2>满足各种应用场景</h2> <p>系统提供RPC/Restful调用方式，JSON/XML数据格式，HTTP/Websocket协议，新老项目平滑过渡。</p></div><div class="feature"><h2>内外网支持</h2> <p>目前已在公司多个信息化系统(Node后端、Web前端、微信小程序、微信网页开发)中应用，外网支持阿里云、新浪云等主流云平台。</p></div><div class="feature"><h2>通用化</h2> <p>与业务完全解耦，凝练多年前后端分离开发经验，满足各类数据报表、图表、数据表单操作等场景，数据输出格式统一，抹平接口格式差异。</p></div></div> <div class="content default custom"><div class="language-js line-numbers-mode"><pre class="language-js"><code><span class="token comment">// 接口列表：</span>
+<span class="token comment">// db.js</span>
+<span class="token keyword">import</span> axios <span class="token keyword">from</span> <span class="token string">'./axios'</span><span class="token punctuation">;</span>
+<span class="token comment">/**
+ *   @database: { 接口管理 }
+ *   @desc:     { 测试数据-查询指定类型数据 }
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token function-variable function">getSampleBar</span> <span class="token operator">=</span> data_type <span class="token operator">=&gt;</span> <span class="token function">axios</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  url<span class="token punctuation">:</span> <span class="token string">'/6/8d5b63370c.json'</span><span class="token punctuation">,</span>
+  params<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    data_type
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token comment">/** 数据量较大时建议使用post模式：
+*
+ *   @database: { 接口管理 }
+ *   @desc:     { 测试数据-查询指定类型数据 }
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token function-variable function">getSampleBar</span> <span class="token operator">=</span> data_type <span class="token operator">=&gt;</span> <span class="token function">axios</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  method<span class="token punctuation">:</span> <span class="token string">'post'</span><span class="token punctuation">,</span>
+  data<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    data_type<span class="token punctuation">,</span>
+    id<span class="token punctuation">:</span> <span class="token number">6</span><span class="token punctuation">,</span>
+    nonce<span class="token punctuation">:</span> <span class="token string">'8d5b63370c'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token comment">/** NodeJS服务端调用：
+*
+ *   @database: { 接口管理 }
+ *   @desc:     { 测试数据-查询指定类型数据 }
+ */</span>
+module<span class="token punctuation">.</span>exports<span class="token punctuation">.</span><span class="token function-variable function">getSampleBar</span> <span class="token operator">=</span> data_type <span class="token operator">=&gt;</span> <span class="token function">axios</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  url<span class="token punctuation">:</span> <span class="token string">'/6/8d5b63370c.json'</span><span class="token punctuation">,</span>
+  params<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    data_type
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-</span>
+
+<span class="token comment">// 业务逻辑</span>
+<span class="token comment">// index.js</span>
+<span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> db <span class="token keyword">from</span> <span class="token string">'./db.js'</span>
+<span class="token keyword">async</span> <span class="token function">fetchData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">let</span> res <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">getSampleBar</span><span class="token punctuation">(</span><span class="token string">'score'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token operator">...</span>
+<span class="token punctuation">}</span>
+
+<span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-</span>
+
+<span class="token comment">// 返回结果</span>
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;data&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token string">&quot;id&quot;</span><span class="token punctuation">:</span> <span class="token number">7</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_type&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;score&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;track_desc&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;得分&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_count&quot;</span><span class="token punctuation">:</span> <span class="token number">16315</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;id&quot;</span><span class="token punctuation">:</span> <span class="token number">8</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_type&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;score&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;track_desc&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;得分&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;10&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_count&quot;</span><span class="token punctuation">:</span> <span class="token number">85132</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;id&quot;</span><span class="token punctuation">:</span> <span class="token number">9</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_type&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;score&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;track_desc&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;得分&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;20&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_count&quot;</span><span class="token punctuation">:</span> <span class="token number">235152</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;id&quot;</span><span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_type&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;score&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;track_desc&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;得分&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;30&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data_count&quot;</span><span class="token punctuation">:</span> <span class="token number">468738</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;rows&quot;</span><span class="token punctuation">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;ip&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;10.8.18.66&quot;</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;header&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;id&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;data_type&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;track_desc&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;data_value&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;data_count&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;title&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;测试数据-查询指定类型数据&quot;</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;time&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;7.091ms&quot;</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;数据来源：接口管理&quot;</span>
+<span class="token punctuation">}</span>
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br></div></div></div> <div class="footer">
+    © 2018 成都印钞有限公司 印钞管理部
+  </div></div></div><div class="global-ui"><!----></div></div>
+    <script src="/doc/assets/js/2.bd2776c9.js" defer></script><script src="/doc/assets/js/3.89829f43.js" defer></script><script src="/doc/assets/js/app.b8ad832f.js" defer></script>
+  </body>
+</html>
