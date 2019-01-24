@@ -68,13 +68,18 @@ let addApi = async () => {
     data.param = paramData.filter((item) => parseInt(item) != item).join(',');
   }
 
-  if (curType) {
+  if (curType === addType.EDIT) {
     // 更新数据时需加入  condition条件，使用key-value形式，后台自动处理
     data.condition = {
       id: editingData[0],
       uid: apps.userInfo.uid
     };
+    data.update_time = lib.now();
+  } else {
+    data.rec_time = lib.now();
   }
+
+  // 201901， 前台执行时间更新操作
 
   await axios({
     data,
