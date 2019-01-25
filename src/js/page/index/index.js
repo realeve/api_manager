@@ -6,6 +6,7 @@ import language from './datatable';
 import tableApp from '../common/renderTable';
 import beautify from 'js-beautify';
 import sqlFormatter from './sqlFormatter';
+import moment from '../../plugins/moment';
 
 const Clipboard = require('clipboard');
 
@@ -223,12 +224,19 @@ let initCopyBtn = () => {
     ];
 
     $('#codeurl').html(urls.join('<br>'));
+    let paramLen = $(this)
+      .data('params')
+      .trim()
+      .split(',').length;
+    let haveParam = paramLen > 0;
+    if (haveParam && paramLen == 2) {
+      haveParam =
+        $(this)
+          .data('params')
+          .replace(/ /g, '') != 'tstart,tend';
+    }
 
-    if (
-      $(this)
-        .data('params')
-        .trim().length
-    ) {
+    if (haveParam) {
       const resultStr = beautify(
         JSON.stringify({
           msg: '该接口中含有额外请求参数，请自行配置参数预览数据'
@@ -239,7 +247,13 @@ let initCopyBtn = () => {
       return;
     }
     axios({
-      url
+      url,
+      params: {
+        tstart: moment()
+          .subtract(3, 'days')
+          .format('YYYYMMDD'),
+        tend: lib.ymd()
+      }
     }).then((data) => {
       const resultStr = beautify(JSON.stringify(data), beautyOption);
       resultEditor.setValue(resultStr);
@@ -540,7 +554,7 @@ let refreshData = () => {
       }" data-url="?id=${row[0]}&nonce=${row[3]}" data-surl="${row[0]}/${
         row[3]
       }" class="btn btn-sm copy ${
-        row[5] == '' ? 'green-jungle' : ''
+        row[5] == '' || row[5] == 'tstart,tend' ? 'green-jungle' : ''
       }" data-clipboard-text="${copyText}" data-post-mode="${postMode}">调用代码</button>`;
 
       row.push(btnEdit + btnDel + btnCopy);

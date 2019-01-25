@@ -136,6 +136,7 @@ let openUrl = (src, isimage = true) => {
 };
 
 let now = () => moment().format('YYYY-MM-DD HH:mm:ss');
+let ymd = () => moment().format('YYYYMMDD');
 
 let checkStatus = (name) => $('[name="' + name + '"]:checked').length == 1;
 export default {
@@ -145,5 +146,6 @@ export default {
   checkStatus,
   tip,
   getBrowser,
-  now
+  now,
+  ymd
 };
