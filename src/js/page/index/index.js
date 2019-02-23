@@ -7,6 +7,7 @@ import tableApp from '../common/renderTable';
 import beautify from 'js-beautify';
 import sqlFormatter from './sqlFormatter';
 import moment from '../../plugins/moment';
+import { saveAs } from 'file-saver';
 
 const Clipboard = require('clipboard');
 
@@ -122,6 +123,9 @@ let initEvent = () => {
   resultEditor = CodeMirror.fromTextArea($('#result')[0], option);
   editor.setSize('100%', '780px');
   resultEditor.setSize('100%', '340px');
+
+  // 公共代码
+  CodeMirror.fromTextArea($('#publicCode')[0], option).setSize('100%', '120px');
 };
 
 let resetNewModal = () => {
@@ -224,11 +228,12 @@ let initCopyBtn = () => {
     ];
 
     $('#codeurl').html(urls.join('<br>'));
-    let paramLen = $(this)
+    let curParam = $(this)
       .data('params')
-      .trim()
-      .split(',').length;
-    let haveParam = paramLen > 0;
+      .trim();
+    let paramLen = curParam.split(',').length;
+    let haveParam = curParam.length && paramLen > 0;
+
     if (haveParam && paramLen == 2) {
       haveParam =
         $(this)
@@ -246,6 +251,11 @@ let initCopyBtn = () => {
       resultEditor.setValue(resultStr);
       return;
     }
+
+    let jsonFileName =
+      $(this)
+        .data('surl')
+        .replace('/', '_') + '.json';
     axios({
       url,
       params: {
@@ -257,6 +267,8 @@ let initCopyBtn = () => {
     }).then((data) => {
       const resultStr = beautify(JSON.stringify(data), beautyOption);
       resultEditor.setValue(resultStr);
+      const blob = new Blob([resultStr], { type: 'text/plain;charset=utf-8' });
+      saveAs(blob, jsonFileName);
     });
   });
 };
@@ -417,7 +429,19 @@ const getAjaxDemo = (row, postMode = false) => {
       break;
   }
 
-  let assignInfo = `export const ${funcName} = ${asyncText}=>axios`;
+  // 调用文件
+  let fileName = `require('@/mock/${row[0]}_${row[3]}.json')`;
+
+  // 返回通用数据
+  // console.log(row[4].split(' ')[0].toUpperCase())
+  let notSelectMode = ['UPDATE', 'INSERT', 'DELETE'].includes(
+    row[4].split(' ')[0].toUpperCase()
+  );
+  if (notSelectMode) {
+    fileName = '_commonData';
+  }
+
+  let assignInfo = `export const ${funcName} = ${asyncText} => DEV ? mock(${fileName}) : axios`;
 
   // 批量插入时对参数需做特殊处理
   if (isPatchInsert) {
