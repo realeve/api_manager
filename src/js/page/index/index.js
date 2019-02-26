@@ -140,6 +140,7 @@ let resetNewModal = () => {
 };
 
 let initEditBtn = () => {
+  let curUID = apps.userInfo.uid;
   $('tbody').on('click', 'button[name="edit"]', function() {
     let id = $(this).data('id');
     curType = addType.EDIT;
@@ -157,6 +158,14 @@ let initEditBtn = () => {
     $('#addapi .modal-title').text('修改接口');
     $('#addapi').modal();
     $('#addapi [name="remark"]').val(editingData[9]);
+
+    if(curUID == $(this).data('uid')){
+      $('#api-saved').show();
+    }else{
+      $('#api-saved').hide();
+    }
+
+
   });
 };
 
@@ -543,13 +552,12 @@ const getAjaxDemo = (row, postMode = false) => {
 let refreshData = () => {
   var option = {
     url: '1/e61799e7ab/array',
-    params: {
-      // id: 1,
-      // mode: 'array'
-      // nonce: 'e61799e7ab',
+    params: { 
       cache: 10
     }
   };
+  let curUid = window.apps.userInfo.uid;
+
   axios(option).then((res) => {
     tblData = res.data.map((item) => {
       item[8] = parseInt(item[8], 10);
@@ -566,11 +574,11 @@ let refreshData = () => {
     res.data = res.data.map((row, i) => {
       const copyText = getAjaxDemo(row);
       const postMode = getAjaxDemo(row, true);
-
-      let btnDel = `<button type="button" name="del" data-toggle="confirmation" data-original-title="确认删除本接口?" data-singleton="true" data-btn-ok-label="是" data-btn-cancel-label="否" data-id="${
+      
+      let btnDel = curUid != row[10] ? '' : `<button type="button" name="del" data-toggle="confirmation" data-original-title="确认删除本接口?" data-singleton="true" data-btn-ok-label="是" data-btn-cancel-label="否" data-id="${
         row[0]
       }" data-nonce="${row[3]}" class="btn red-haze btn-sm">删除</button>`;
-      let btnEdit = `<button type="button" name="edit" data-id="${
+      let btnEdit = `<button type="button" name="edit" data-uid="${row[10]}" data-id="${
         row[0]
       }" class="btn blue-steel btn-sm">编辑</button>`;
       let btnCopy = `<button type="button" name="preview" data-params="${
@@ -617,6 +625,24 @@ let initDatatable = (res) => {
     destroy: true,
     columnDefs: [
       {
+        targets: [10],
+        visible: false,
+        searchable: false,
+        sortable:0
+      },
+      {
+        targets: [9],
+        visible: false,
+        searchable: false,
+        sortable:0
+      },
+      {
+        targets: [8],
+        visible: false,
+        searchable: false,
+        sortable:0
+      },
+      {
         targets: [5],
         visible: false,
         searchable: false
@@ -625,10 +651,6 @@ let initDatatable = (res) => {
         targets: [3],
         visible: false
       },
-      {
-        targets: [9],
-        visible: false
-      }
     ],
     autoWidth: false,
     lengthMenu: [
@@ -644,6 +666,9 @@ let initDatatable = (res) => {
     pageLength: 10,
     initComplete: function(settings) {
       var api = this.api();
+      
+      initDelBtn();
+
       api.on('click', 'tbody td', function() {
         const text = $(this)
           .text()
@@ -655,7 +680,6 @@ let initDatatable = (res) => {
           api.search(this.innerText.trim()).draw();
         }
       });
-      initDelBtn();
       initCopyBtn();
       initStatus = true;
     }
