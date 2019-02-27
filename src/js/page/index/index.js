@@ -551,10 +551,7 @@ const getAjaxDemo = (row, postMode = false) => {
 
 let refreshData = () => {
   var option = {
-    url: '1/e61799e7ab/array',
-    params: { 
-      cache: 10
-    }
+    url: '1/e61799e7ab/array' 
   };
   let curUid = window.apps.userInfo.uid;
 
