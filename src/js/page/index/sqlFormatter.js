@@ -30,7 +30,7 @@ let systemVariants = [{
     },
     {
         name: 'blob',
-        desc: "指定哪些字段是二进数据，array|string。<br>例如在json输出的数据格式中，blob = ['img_data'] 时，img_data将会被base64编码;<br>在array输出时，blob=[5]时，每项数据的第5项将会被base64编码。<br><br>示例url:<br>api.example.com/171/994d3ec6b8/5.json?blob[]=img_data&date_type=jpg<br>api.example.com/171/994d3ec6b8/5?mode=array&blob[]=5<br>api.example.com/api/172/521dfce816.json?cache=5&blob[]=ErrImage1&blob[]=ErrImage2&blob[]=ErrImage3&date_type=jpg"
+        desc: "指定哪些字段是二进数据，array|string。<br>例如在json输出的数据格式中，blob = ['img_data'] 时，img_data将会被base64编码;<br>在array输出时，blob=[5]时，每项数据的第5项将会被base64编码。<br><br>示例url:<br>api.example.com/171/994d3ec6b8/5.json?carts=1880G898&blob[]=img_data&date_type=jpg<br>api.example.com/171/994d3ec6b8/5?carts=1880G898&mode=array&blob[]=5<br>api.example.com/api/172/521dfce816.json?cache=5&carts=1880G898&blob[]=ErrImage1&blob[]=ErrImage2&blob[]=ErrImage3&date_type=jpg"
     },
     {
         name: 'blob_type',
