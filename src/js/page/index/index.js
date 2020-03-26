@@ -206,7 +206,7 @@ let initCopyBtn = () => {
 
     codeStr +=
       +"\n\r\n\r" +
-      postModeStr.replace("/**", "\n/** 数据量较大时建议使用post模式：\n*") +
+      postModeStr.replace("/**", "\n\r/** 数据量较大时建议使用post模式：\n*") +
       "\n\r\n\r" +
       codeNodeStr;
 
@@ -501,8 +501,9 @@ const getAjaxDemo = (row, postMode = false) => {
         break;
     }
 
-    text = decodeStr.length
-      ? `{
+    text =
+      decodeStr.length > 0
+        ? `{
             method:'post',
             data:{
                 ${decodeStr}
@@ -510,7 +511,7 @@ const getAjaxDemo = (row, postMode = false) => {
                 nonce:'${row[3]}'
             },
         }`
-      : `{
+        : `{
             method:'post',
             data:{
                 id:${row[0]},
@@ -544,8 +545,9 @@ const getAjaxDemo = (row, postMode = false) => {
 *   @desc:     { ${isPatchInsert ? "批量" : ""}${row[2]} } ${remark}`;
 
   let copyText = `${tipInfo}*\/
-    ${assignInfo}(${text});  
+    ${assignInfo}(${text});
 `;
+
   let tipInfoFetch = `
 \/**
 *   fetch post模式
@@ -555,8 +557,9 @@ const getAjaxDemo = (row, postMode = false) => {
   let preCode = "";
 
   if (!isPatchInsert) {
-    if (params.length && params.includes(",")) {
+    if (params.length > 0 && params.includes(",")) {
       copyText = `
+
         ${tipInfo}
     const ${paramCode} = params;
 *\/
@@ -564,9 +567,10 @@ const getAjaxDemo = (row, postMode = false) => {
       `;
     } else {
       copyText = `
+
       ${tipInfo}
     *\/
-    ${assignInfo}(${text}); `;
+    ${assignInfo}(${text});`;
     }
   }
 
