@@ -593,7 +593,7 @@ const getAjaxDemo = (row, postMode = false) => {
     *\/ 
     const { data, error, loading } = useFetch({
       param: {
-        url: \`${apps.host}api${url}\`,
+        url: \`${url}\`,
         params: ${paramCode},
       },
       // valid:()=>true , // params中指定参数存在时才发起请求
