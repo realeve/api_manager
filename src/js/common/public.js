@@ -4,9 +4,9 @@
 // 由于需要全局传递数据，该文件不做babel转码及后续的webpack打包，请使用ES5。
 var apps = (function() {
   // var host = 'http://localhost:90/';
-  // host = '//10.8.1.25:100/';
-  // var host = "//api.cbpc.ltd/";
-  var host = '//cdn.cdyc.cbpm:100/';
+  host = '//10.8.1.25:100/';
+  // var host = '//api.cbpc.ltd/';
+  // var host = '//cdn.cdyc.cbpm:100/';
 
   var token = '';
   // 业务经办人

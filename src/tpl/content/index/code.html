@@ -1,29 +1,36 @@
 <div class="row">
-    <div class="col-md-6">
-        <h4 class="marign-top-20">公共代码(引用在db.js之前)
-            <a href="./img/axios.js" target="_blank"><small>右键点击下载 axios.js 文件</small></a></h4>
-        <textarea id="publicCode">
+  <div class="col-md-6">
+    <h4 class="marign-top-20">
+      公共代码(引用在db.js之前)
+      <a href="./img/axios.js" target="_blank"
+        ><small>右键点击下载 axios.js 文件</small></a
+      >
+      <a href="./img/useFetch.ts" target="_blank" style="margin-left: 20px;"
+        ><small>右键点击下载 useFetch.ts 文件</small></a
+      >
+    </h4>
+    <textarea id="publicCode">
 import { axios, DEV ,mock,_commonData } from '@/utils/axios'; 
 
 /* mock用于数据模拟，当接口不含参数时，请将下载的json文件放到./src/mock/目录中(关于@ alias配置请参考webpack官方文档)
 * 否则请自行在浏览器中测试，并按要求将数据手工复制到目录中；
   _commonData用于除查询请求外的公共数据返回，默认返回数据写操作成功
 **/
-        </textarea>
+        </textarea
+    >
 
-        <h4 class="marign-top-20">示例代码:db.js( <small>mock函数请参考axios.js中的实现</small>)</h4>
+    <h4 class="marign-top-20">
+      示例代码:db.js( <small>mock函数请参考axios.js中的实现</small>)
+    </h4>
 
-        <textarea id="codeContent">
-    </textarea>
-    </div>
-    <div class="col-md-6">
-        <h4>返回结果</h4>
-        <textarea id="result"> </textarea>
-        <h4>调用地址</h4>
-        <div id="codeurl">
-
-        </div>
-        <h4 class="margin-top-10">默认参数说明:</h4>
-        <div id="defaultParam"></div>
-    </div>
+    <textarea id="codeContent"> </textarea>
+  </div>
+  <div class="col-md-6">
+    <h4>返回结果</h4>
+    <textarea id="result"> </textarea>
+    <h4>调用地址</h4>
+    <div id="codeurl"></div>
+    <h4 class="margin-top-10">默认参数说明:</h4>
+    <div id="defaultParam"></div>
+  </div>
 </div>
