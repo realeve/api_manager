@@ -122,10 +122,10 @@ let initEvent = () => {
   editor = CodeMirror.fromTextArea($("#codeContent")[0], option);
   resultEditor = CodeMirror.fromTextArea($("#result")[0], option);
   editor.setSize("100%", "780px");
-  resultEditor.setSize("100%", "120px");
+  resultEditor.setSize("100%", "480px");
 
   // 公共代码
-  CodeMirror.fromTextArea($("#publicCode")[0], option).setSize("100%", "400px");
+  CodeMirror.fromTextArea($("#publicCode")[0], option).setSize("100%", "120px");
 };
 
 let resetNewModal = () => {
@@ -426,7 +426,7 @@ const getAjaxDemo = (row, postMode = false) => {
     .replace(/,/g, ", ");
 
   let text = `{
-                url:'${url}'
+              url: DEV ? ${fileName} : '${url}',
             }`;
   let textFetch = "";
 
@@ -451,17 +451,17 @@ const getAjaxDemo = (row, postMode = false) => {
           .split(",");
 
         if (detail.length == 0) {
-          paramText = `(${param[0]}:{})=>IAxiosState`;
+          paramText = `(${param[0]}:{})=>Promise<IAxiosState>`;
         } else {
           paramText = `({${detail
             .map(item => `${item}:string;`)
-            .join(" ")}})=>IAxiosState`;
+            .join(" ")}})=>Promise<IAxiosState>`;
         }
       } else {
         paramText =
           param[0] === ""
-            ? "()=>IAxiosState"
-            : `(${param[0]}:string)=>IAxiosState`;
+            ? "()=>Promise<IAxiosState>"
+            : `(${param[0]}:string)=>Promise<IAxiosState>`;
       }
 
       asyncText = param[0] === "" ? "()" : `${param[0]}`;
@@ -472,12 +472,12 @@ const getAjaxDemo = (row, postMode = false) => {
         .replace(/ /g, "")
         .split(",")
         .map(item => `${item}:string;`)
-        .join("\r\n")}})=>IAxiosState`;
+        .join("\r\n")}})=>Promise<IAxiosState>`;
       break;
   }
 
   // 调用文件
-  let fileName = `require('@/mock/${row[0]}_${row[3]}.json')`;
+  let fileName = `'@/mock/${row[0]}_${row[3]}.json'`;
 
   // 返回通用数据
   // console.log(row[4].split(' ')[0].toUpperCase())
@@ -488,8 +488,8 @@ const getAjaxDemo = (row, postMode = false) => {
     fileName = "_commonData";
   }
 
-  let assignInfo = `export const ${funcName}:${paramText} = ${asyncText} => DEV ? mock(${fileName}) : axios`;
-  let fetchAssignInfo = `export const ${funcName}:${paramText} = ${asyncText} => DEV ? mock(${fileName}) : fetch`;
+  let assignInfo = `export const ${funcName}:${paramText} = ${asyncText} => axios`;
+  let fetchAssignInfo = `export const ${funcName}:${paramText} = ${asyncText} => fetch`; // DEV ? mock(${fileName}) :
 
   // 批量插入时对参数需做特殊处理
   if (isPatchInsert) {
@@ -505,12 +505,12 @@ const getAjaxDemo = (row, postMode = false) => {
   if (params.length && !isPatchInsert) {
     if (param.length > 1) {
       text = `{
-          url:'${url}',
+          url: DEV ? ${fileName} : '${url}',
           params,
       }`;
     } else {
       text = `{
-          url:'${url}',
+        url: DEV ? ${fileName} : '${url}',
           params:{${param[0]}},
       }`;
     }
