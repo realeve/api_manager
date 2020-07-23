@@ -122,10 +122,10 @@ let initEvent = () => {
   editor = CodeMirror.fromTextArea($("#codeContent")[0], option);
   resultEditor = CodeMirror.fromTextArea($("#result")[0], option);
   editor.setSize("100%", "780px");
-  resultEditor.setSize("100%", "340px");
+  resultEditor.setSize("100%", "120px");
 
   // 公共代码
-  CodeMirror.fromTextArea($("#publicCode")[0], option).setSize("100%", "120px");
+  CodeMirror.fromTextArea($("#publicCode")[0], option).setSize("100%", "400px");
 };
 
 let resetNewModal = () => {
@@ -199,6 +199,7 @@ let initCopyBtn = () => {
     let codeStr = beautify(code, beautyOption);
 
     const codePost = $(this).data("post-mode");
+
     const postModeStr = beautify(codePost, beautyOption);
     const codeNodeStr = codeStr
       .replace("export const ", "module.exports.")
@@ -210,7 +211,11 @@ let initCopyBtn = () => {
       "\n\r\n\r" +
       codeNodeStr;
 
-    editor.setValue(codeStr);
+    editor.setValue(
+      `import { axios, IAxiosState, AxiosError, DEV, mock, _commonData } from '@/utils/axios'; 
+import useFetch,{IFetchState} from '@/utils/useFetch';\r\n
+` + codeStr.replace("});0", "});")
+    );
 
     let url = $(this).data("url") + "&cache=0";
     let surl = $(this).data("surl");
@@ -329,7 +334,7 @@ let deleteAPI = (id, nonce) => {
 let capitalize = str =>
   (str[0].toUpperCase() + str.substr(1, str.length)).replace(/"/g, "");
 let handleTableName = str => {
-  str = str.toLowerCase();
+  str = str.toLowerCase().replace(/\[|\]/g, "");
   if (str.includes("@")) {
     let [_t, _db] = str.split("@");
     str = _t + "From" + capitalize(_db);
@@ -436,14 +441,38 @@ const getAjaxDemo = (row, postMode = false) => {
 
   let { funcName, mode } = getFucName(row[4], isPatchInsert);
 
-  let asyncText;
+  let asyncText, paramText;
   let param = ("" + params).split(",");
   switch (param.length) {
     case 1:
+      if (param[0] == "values") {
+        var detail = (row[9].match(/\[(\s|\S)+\]/g) || [""])[0]
+          .replace(/\[|\|\{|\}]/g, "")
+          .split(",");
+
+        if (detail.length == 0) {
+          paramText = `(${param[0]}:{})=>IAxiosState`;
+        } else {
+          paramText = `({${detail
+            .map(item => `${item}:string;`)
+            .join(" ")}})=>IAxiosState`;
+        }
+      } else {
+        paramText =
+          param[0] === ""
+            ? "()=>IAxiosState"
+            : `(${param[0]}:string)=>IAxiosState`;
+      }
+
       asyncText = param[0] === "" ? "()" : `${param[0]}`;
       break;
     default:
       asyncText = "params";
+      paramText = `({${params
+        .replace(/ /g, "")
+        .split(",")
+        .map(item => `${item}:string;`)
+        .join("\r\n")}})=>IAxiosState`;
       break;
   }
 
@@ -459,8 +488,8 @@ const getAjaxDemo = (row, postMode = false) => {
     fileName = "_commonData";
   }
 
-  let assignInfo = `export const ${funcName} = ${asyncText} => DEV ? mock(${fileName}) : axios`;
-  let fetchAssignInfo = `export const ${funcName} = ${asyncText} => DEV ? mock(${fileName}) : fetch`;
+  let assignInfo = `export const ${funcName}:${paramText} = ${asyncText} => DEV ? mock(${fileName}) : axios`;
+  let fetchAssignInfo = `export const ${funcName}:${paramText} = ${asyncText} => DEV ? mock(${fileName}) : fetch`;
 
   // 批量插入时对参数需做特殊处理
   if (isPatchInsert) {
@@ -556,12 +585,12 @@ const getAjaxDemo = (row, postMode = false) => {
 
   let preCode = "";
 
+  // const ${paramCode} = params;
   if (!isPatchInsert) {
     if (params.length > 0 && params.includes(",")) {
       copyText = `
 
-        ${tipInfo}
-    const ${paramCode} = params;
+        ${tipInfo} 
 *\/
       ${assignInfo}(${text});  
       `;
@@ -588,20 +617,21 @@ const getAjaxDemo = (row, postMode = false) => {
         break;
     }
 
-    copyText += `  
+    copyText += `   
     \/**
     *   useFetch (React hooks)
     *   @database: { ${row[1]} }
     *   @desc:     { ${isPatchInsert ? "批量" : ""}${row[2]} } ${remark}
     *   useFetch 返回值说明： data(返回数据), error(报错), loading(加载状态), reFetch(强制刷新),setData(强制设定数据) 
     *\/ 
-    const { data, error, loading } = useFetch({
+    const res: IFetchState = useFetch({
       param: {
         url: \`${url}\`,
-        params: ${paramCode},
+        params: ${!params.includes(",") ? `{ ${params} }` : paramCode},
       },
-      // valid:()=>true , // params中指定参数存在时才发起请求
     });
+    // valid:()=>true , // params中指定参数存在时才发起请求
+    // callback:e=>e,// 数据回调
 
     ${tipInfoFetch}
     const ${paramCode} = params;

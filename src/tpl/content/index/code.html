@@ -2,20 +2,48 @@
   <div class="col-md-6">
     <h4 class="marign-top-20">
       公共代码(引用在db.js之前)
-      <a href="./img/axios.js" target="_blank"
-        ><small>右键点击下载 axios.js 文件</small></a
+      <a href="./img/axios.ts" target="_blank"
+        ><small>右键点击下载 axios.ts 文件 (2020-07-23更新)</small></a
       >
       <a href="./img/useFetch.ts" target="_blank" style="margin-left: 20px;"
         ><small>右键点击下载 useFetch.ts 文件</small></a
       >
     </h4>
     <textarea id="publicCode">
-import { axios, DEV ,mock,_commonData } from '@/utils/axios'; 
+import { axios, IAxiosState, AxiosError, DEV, mock, _commonData } from '@/utils/axios'; 
+import useFetch,{IFetchState} from '@/utils/useFetch';
 
 /* mock用于数据模拟，当接口不含参数时，请将下载的json文件放到./src/mock/目录中(关于@ alias配置请参考webpack官方文档)
 * 否则请自行在浏览器中测试，并按要求将数据手工复制到目录中；
   _commonData用于除查询请求外的公共数据返回，默认返回数据写操作成功
 **/
+
+
+/**
+ * @param title:标题
+ * @param rows 数据行
+ * @param data 数据
+ * @param header 字段列表，报表头
+ * @param ip IP地址
+ * @param date 请求日期
+ * @param source 数据来源:某数据库
+ * @param time 当前时间
+ * @param serverTime 服务器时间
+ * @param hash 当前数据的hash值，数据变更时hash变更
+ */
+export interface IAxiosState {
+  title: string;
+  rows: number;
+  data: ({ [key: string]: any } | [])[];
+  header: string[];
+  ip: string;
+  date: string[];
+  source: string;
+  time: string;
+  serverTime: string;
+  hash: string;
+  [key: string]: any;
+}
         </textarea
     >
 
@@ -23,7 +51,7 @@ import { axios, DEV ,mock,_commonData } from '@/utils/axios';
       示例代码:db.js( <small>mock函数请参考axios.js中的实现</small>)
     </h4>
 
-    <textarea id="codeContent"> </textarea>
+    <textarea id="codeContent"></textarea>
   </div>
   <div class="col-md-6">
     <h4>返回结果</h4>
