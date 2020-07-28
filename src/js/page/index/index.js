@@ -350,6 +350,7 @@ let handleTableName = str => {
 
 let getFucName = (sql, isPatchInsert) => {
   let DATA_MODE = sql.split(" ")[0].toLowerCase();
+
   let tableName = "",
     prefix = "";
   switch (DATA_MODE) {
@@ -390,7 +391,15 @@ let getFucName = (sql, isPatchInsert) => {
       prefix = "call";
       tableName = sql.split(" ")[1].split("(")[0];
       break;
+    case "declare":
+      prefix = "call";
+      tableName = sql
+        .split("select ")[1]
+        .split(" ")[0]
+        .replace(/@/, "");
+      break;
     case "exec":
+    case "execute":
       prefix = "call";
       tableName = sql.split(" ")[1].split("@")[0];
       break;
@@ -406,9 +415,12 @@ let getFucName = (sql, isPatchInsert) => {
       }
       prefix = "get";
       tableName = 1;
-      tableName = sql.match(/ from(\s+)(\S+)/gi)[0].match(/(\S+)/gi)[1];
+      tableName = (sql.match(/ from(\s+)(\S+)/gi) || ["dual"])[0].match(
+        /(\S+)/gi
+      )[1];
       break;
   }
+
   return {
     funcName: prefix + handleTableName(tableName),
     mode: DATA_MODE
