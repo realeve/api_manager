@@ -4,29 +4,29 @@
 // 由于需要全局传递数据，该文件不做babel转码及后续的webpack打包，请使用ES5。
 var apps = (function() {
   // var host = 'http://localhost:90/';
-  host = '//10.8.1.25:100/';
+  var host = "//10.8.1.25:100/";
   // var host = '//api.cbpc.ltd/';
   // var host = '//cdn.cdyc.cbpm:100/';
 
-  var token = '';
+  var token = "";
   // 业务经办人
   var userInfo = {
-    name: '',
-    uid: '',
-    fullname: '',
-    org: ''
+    name: "",
+    uid: "",
+    fullname: "",
+    org: ""
   };
 
   /**
    * 菜单样式 active
    */
   var handleMenuInfo = function() {
-    var href = window.location.href.split('/');
+    var href = window.location.href.split("/");
     var menuItem = href[href.length - 1];
-    var dom = $('.nav').find('[href="' + menuItem + '"]');
-    dom.parent().addClass('active');
+    var dom = $(".nav").find('[href="' + menuItem + '"]');
+    dom.parent().addClass("active");
 
-    $('.logo-default').text('API Manager');
+    $(".logo-default").text("API Manager");
   };
 
   var init = function() {
@@ -35,24 +35,24 @@ var apps = (function() {
   };
 
   var loadUserInfo = function() {
-    var isLogin = window.location.pathname.indexOf('login.html') > -1;
+    var isLogin = window.location.pathname.indexOf("login.html") > -1;
     if (isLogin) {
       return;
     }
-    var user = window.localStorage.getItem('user');
+    var user = window.localStorage.getItem("user");
     if (user == null) {
-      window.location.href = './login.html';
+      window.location.href = "./login.html";
       return {
-        token: ''
+        token: ""
       };
     }
     user = JSON.parse(user);
     apps.token = user.token;
-    $('.nav .username').text(user.fullname);
+    $(".nav .username").text(user.fullname);
 
     userInfo.name = user.user;
     userInfo.fullname = user.fullname;
-    var extraInfo = atob(user.token.split('.')[1]);
+    var extraInfo = atob(user.token.split(".")[1]);
     userInfo.uid = JSON.parse(extraInfo).extra.uid;
 
     return user;

@@ -480,7 +480,7 @@ const getAjaxDemo = (row, postMode = false) => {
       break;
     default:
       asyncText = "params";
-      paramText = `({${params
+      paramText = `(params:{${params
         .replace(/ /g, "")
         .split(",")
         .map(item => `${item}:string;`)
