@@ -212,7 +212,7 @@ let initCopyBtn = () => {
       codeNodeStr;
 
     editor.setValue(
-      `import { axios, IAxiosState, AxiosError, DEV, mock, _commonData } from '@/utils/axios'; 
+      `import { axios, IAxiosState, AxiosError, DEV, mock, _commonData,TDbWrite } from '@/utils/axios'; 
 import useFetch,{IFetchState} from '@/utils/useFetch';\r\n
 ` + codeStr.replace("});0", "});")
     );
@@ -459,6 +459,19 @@ const getAjaxDemo = (row, postMode = false) => {
 
   let { funcName, mode } = getFucName(row[4], isPatchInsert);
 
+  // 写入数据的模式
+  let isWriteMode = ["set", "del"].includes(funcName.slice(0, 3));
+  let isAddMode = "add" == funcName.slice(0, 3);
+  let thenStr = isWriteMode
+    ? `.then(({ data: [{ affected_rows }] }) => (affected_rows as number) > 0)`
+    : "";
+  thenStr = isAddMode ? `.then(({ data: [{ id }] }) => id)` : thenStr;
+
+  let typePromise =
+    isAddMode || isWriteMode
+      ? `Promise<boolean|number>`
+      : `Promise<IAxiosState>`;
+
   let asyncText, paramText;
   let param = ("" + params).split(",");
   switch (param.length) {
@@ -469,17 +482,17 @@ const getAjaxDemo = (row, postMode = false) => {
           .split(",");
 
         if (detail.length == 0) {
-          paramText = `(${param[0]}:{})=>Promise<IAxiosState>`;
+          paramText = `(${param[0]}:{})=>${typePromise}`;
         } else {
           paramText = `({${detail
             .map(item => `${item}:string;`)
-            .join(" ")}})=>Promise<IAxiosState>`;
+            .join(" ")}})=>${typePromise}`;
         }
       } else {
         paramText =
           param[0] === ""
-            ? "()=>Promise<IAxiosState>"
-            : `(${param[0]}:string)=>Promise<IAxiosState>`;
+            ? `()=>${typePromise}`
+            : `(${param[0]}:string)=>${typePromise}`;
       }
 
       asyncText = param[0] === "" ? "()" : `${param[0]}`;
@@ -490,7 +503,7 @@ const getAjaxDemo = (row, postMode = false) => {
         .replace(/ /g, "")
         .split(",")
         .map(item => `${item}:string;`)
-        .join("\r\n")}})=>Promise<IAxiosState>`;
+        .join("\r\n")}})=>${typePromise}`;
       break;
   }
 
@@ -506,7 +519,9 @@ const getAjaxDemo = (row, postMode = false) => {
     fileName = "_commonData";
   }
 
-  let assignInfo = `export const ${funcName}:${paramText} = ${asyncText} => axios`;
+  let assignInfo = `export const ${funcName}:${paramText} = ${asyncText} => axios${
+    isAddMode || isWriteMode ? "<TDbWrite>" : ""
+  }`;
   let fetchAssignInfo = `export const ${funcName}:${paramText} = ${asyncText} => fetch`; // DEV ? mock(${fileName}) :
 
   // 批量插入时对参数需做特殊处理
@@ -602,12 +617,6 @@ const getAjaxDemo = (row, postMode = false) => {
 *   @desc:     { ${isPatchInsert ? "批量" : ""}${row[2]} } ${remark}`;
 
   let preCode = "";
-
-  // 写入数据的模式
-  let isWriteMode = ["set", "add", "del"].includes(funcName.slice(0, 3));
-  let thenStr = isWriteMode
-    ? `.then(({ data: [{ affected_rows }] }: IAxiosState) => (affected_rows as number) > 0)`
-    : "";
 
   // const ${paramCode} = params;
   if (!isPatchInsert) {

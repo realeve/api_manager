@@ -200,8 +200,19 @@ export const handleData: <T extends IAxiosState>({ data }: AxiosResponse<T>) => 
 };
 
 
+interface IAxiosConfig extends Omit<AxiosRequestConfig, 'url'> {
+  url?: string | IAxiosState;
+}
 // 自动处理token更新，data 序列化等
-export let axios: <T = TAxiosData>(params: AxiosRequestConfig) => Promise<IAxiosState<T>> = (option)=>{
+export let axios: <T = TAxiosData>(params: IAxiosConfig) => Promise<IAxiosState<T>> = ({
+  baseURL = host,
+  ..._option
+}) => {
+  if (typeof _option.url == 'object') {
+    return mock(_option.url);
+  } 
+
+  let option: AxiosRequestConfig = handleUrl(_option);
 
   if (typeof option === 'string') {
     option = {
