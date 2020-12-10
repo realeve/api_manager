@@ -462,15 +462,17 @@ const getAjaxDemo = (row, postMode = false) => {
   // 写入数据的模式
   let isWriteMode = ["set", "del"].includes(funcName.slice(0, 3));
   let isAddMode = "add" == funcName.slice(0, 3);
-  let thenStr = isWriteMode
-    ? `.then(({ data: [{ affected_rows }] }) => (affected_rows as number) > 0)`
+  let thenStr = isAddMode
+    ? `.then(({ data: [{ id }] }) => id)`
+    : isWriteMode
+    ? `.then(({ data: [{ affected_rows }] }) => affected_rows > 0)`
     : "";
-  thenStr = isAddMode ? `.then(({ data: [{ id }] }) => id)` : thenStr;
 
-  let typePromise =
-    isAddMode || isWriteMode
-      ? `Promise<boolean|number>`
-      : `Promise<IAxiosState>`;
+  let typePromise = isAddMode
+    ? `Promise<number>`
+    : isWriteMode
+    ? `Promise<boolean>`
+    : `Promise<IAxiosState>`;
 
   let asyncText, paramText;
   let param = ("" + params).split(",");
@@ -607,7 +609,7 @@ const getAjaxDemo = (row, postMode = false) => {
 *   @desc:     { ${isPatchInsert ? "批量" : ""}${row[2]} } ${remark}`;
 
   let copyText = `${tipInfo}*\/
-    ${assignInfo}(${text});
+    ${assignInfo}(${text})${thenStr}; 
 `;
 
   let tipInfoFetch = `
