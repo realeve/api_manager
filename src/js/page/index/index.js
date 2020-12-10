@@ -415,9 +415,15 @@ let getFucName = (sql, isPatchInsert) => {
       }
       prefix = "get";
       tableName = 1;
-      tableName = (sql.match(/ from(\s+)(\S+)/gi) || ["dual"])[0].match(
-        /(\S+)/gi
-      )[1];
+      try {
+        tableName = (sql.match(/ from(\s+)(\S+)/gi) || ["dual"])[0].match(
+          /(\S+)/gi
+        )[1];
+      } catch (e) {
+        console.log(e);
+        console.log("解析出错", sql);
+        tableName = "UnknownTable";
+      }
       break;
   }
 
@@ -597,6 +603,12 @@ const getAjaxDemo = (row, postMode = false) => {
 
   let preCode = "";
 
+  // 写入数据的模式
+  let isWriteMode = ["set", "add", "del"].includes(funcName.slice(0, 3));
+  let thenStr = isWriteMode
+    ? `.then(({ data: [{ affected_rows }] }: IAxiosState) => (affected_rows as number) > 0)`
+    : "";
+
   // const ${paramCode} = params;
   if (!isPatchInsert) {
     if (params.length > 0 && params.includes(",")) {
@@ -604,14 +616,14 @@ const getAjaxDemo = (row, postMode = false) => {
 
         ${tipInfo} 
 *\/
-      ${assignInfo}(${text});  
+      ${assignInfo}(${text})${thenStr};  
       `;
     } else {
       copyText = `
 
       ${tipInfo}
     *\/
-    ${assignInfo}(${text});`;
+    ${assignInfo}(${text})${thenStr};`;
     }
   }
 
@@ -650,7 +662,7 @@ const getAjaxDemo = (row, postMode = false) => {
     *\/
     ${fetchAssignInfo}
     ('${apps.host}api',${textFetch})
-    .then(res=>res.json()); 
+    .then(res=>res.json())${thenStr}; 
     
     \/**
 *   fetch get模式
@@ -660,10 +672,11 @@ const getAjaxDemo = (row, postMode = false) => {
 *\/
     ${fetchAssignInfo}
     (\`${apps.host}api${url}${decodeStr}\`)
-    .then(res=>res.json()); 
+    .then(res=>res.json())${thenStr}; 
     `;
   }
 
+  copyText = copyText.replace(" 0);0", " 0);");
   return beautify(copyText, {
     indent_size: 2,
     wrap_line_length: 80,

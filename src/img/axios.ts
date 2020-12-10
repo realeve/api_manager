@@ -1,10 +1,19 @@
-import http from "axios";
+/**
+ * axios封装示例
+ * 更新日期:2020-12-10
+ */
+import http, { AxiosRequestConfig, AxiosResponse, AxiosError as _AxiosError } from 'axios';
 import qs from "qs";
 
 // 开发模式
 export let DEV = false;
 export let host = "//localhost";
 
+/**
+ * @param affected_rows 数据写操作返回的成功条数
+ */
+export type TDbWrite = { affected_rows?: number; id?: number; [key: string]: any };
+export type TAxiosData = TDbWrite | [];
 /**
  * @param title:标题
  * @param rows 数据行
@@ -17,17 +26,18 @@ export let host = "//localhost";
  * @param serverTime 服务器时间
  * @param hash 当前数据的hash值，数据变更时hash变更
  */
-export interface IAxiosState {
+export interface IAxiosState<T = TAxiosData> {
   title: string;
   rows: number;
-  data: ({ [key: string]: any } | [])[];
+  data: T[];
   header: string[];
-  ip: string;
-  date: string[];
-  source: string;
-  time: number;
+  ip?: string;
+  date?: string[];
+  source?: string;
+  time?: number;
   serverTime: string;
   hash: string;
+  token?: string;
   [key: string]: any;
 }
 
@@ -82,7 +92,18 @@ export const mockData: <T>(data: T, time?: number) => Promise<T> = (
   });
 
 // 判断数据类型，对于FormData使用 typeof 方法会得到 object;
-let getType = function(data) {
+type TypeList =
+  | 'object'
+  | 'number'
+  | 'boolean'
+  | 'string'
+  | 'null'
+  | 'array'
+  | 'regexp'
+  | 'function'
+  | 'undefined'
+  | 'symbol';
+export const getType: (data: any) => TypeList=(data)=> {
   return Object.prototype.toString
     .call(data)
     .match(/\S+/g)[1]
@@ -97,8 +118,7 @@ export interface AxiosError {
   params: any;
   status?: number;
 }
-
-export const handleError = error => {
+export const handleError: (error: _AxiosError) => Promise<Partial<AxiosError> | null> = async (error) => {
   let config = error.config || {};
 
   let str = config.params || config.data || {};
@@ -168,7 +188,7 @@ export const handleUrl = option => {
   return option;
 };
 
-export const handleData = ({ data }) => {
+export const handleData: <T extends IAxiosState>({ data }: AxiosResponse<T>) => T = ({ data }) => {
   // 刷新token
   if (typeof data.token !== "undefined") {
     // 保存全局token
@@ -179,8 +199,9 @@ export const handleData = ({ data }) => {
   return data;
 };
 
+
 // 自动处理token更新，data 序列化等
-export const axios = option => { 
+export let axios: <T = TAxiosData>(params: AxiosRequestConfig) => Promise<IAxiosState<T>> = (option)=>{
 
   if (typeof option === 'string') {
     option = {
@@ -196,7 +217,7 @@ export const axios = option => {
   return http
     .create({
       baseURL: host,
-      timeout: 10000,
+      timeout: 30*1000,
       transformRequest: [
         function(data) {
           let dataType = getType(data);
@@ -212,8 +233,8 @@ export const axios = option => {
         },
       ],
     })(option)
-    .then(res => handleData(res))
-    .catch(error => handleError(error));
+    .then(handleData)
+    .catch(error => (error));
 };
 
 
