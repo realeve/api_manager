@@ -61,7 +61,7 @@ let addApi = async () => {
     .replace(/  /g, " ")
     .replace(/？/g, "?")
     .replace(/, /g, ",")
-    .replace(/`/g, "")
+    // .replace(/`/g, "")
     .trim();
 
   // 去除param中数字部分，禁止1=1此类问题出现
@@ -249,7 +249,7 @@ import useFetch,{IFetchState} from '@/utils/useFetch';\r\n
       .data("params")
       .trim();
     let paramLen = curParam.split(",").length;
-    let haveParam = curParam.length && paramLen > 0;
+    let haveParam = curParam.length > 0 && paramLen > 0;
 
     if (haveParam && paramLen == 2) {
       haveParam =
@@ -537,7 +537,7 @@ const getAjaxDemo = (row, postMode = false) => {
         }`;
   }
 
-  if (params.length && !isPatchInsert) {
+  if (params.length > 0 && !isPatchInsert) {
     if (param.length > 1) {
       text = `{
           url: DEV ? ${fileName} : '${url}',
